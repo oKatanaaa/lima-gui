@@ -1,0 +1,65 @@
+from lima_gui.view.main_window import MainWindow
+from lima_gui.view.chat_widget import ChatWindow
+from lima_gui.model.chat_dataset import ChatDataset
+from lima_gui.model.chat import Chat
+from .chat_controller import ChatController
+import pandas as pd
+
+
+class Controller:
+    def __init__(self, main_window: MainWindow):
+        self.main_window = main_window
+        self.main_window.set_column_names(['Chat name', 'Language', 'Msg count'])
+        
+        self.main_window.set_add_chat_callback(self.on_add_chat_clicked)
+        self.main_window.set_delete_chat_callback(self.on_delete_chat_clicked)
+        self.main_window.set_chat_double_clicked_callback(self.on_chat_double_clicked)
+        self.main_window.set_save_callback(self.on_save_triggered)
+        self.main_window.set_open_callback(self.on_open_triggered)
+        self.main_window.show()
+        
+        self.dataset = ChatDataset([])
+        
+        self.chat_controller = None
+    
+    def on_save_triggered(self, filename):
+        print('save triggered', filename)
+        pd = self.dataset.to_pandas()
+        pd.to_csv(filename, index=False)
+        
+    def on_open_triggered(self, filename):
+        print('open triggered', filename)
+        self.dataset = ChatDataset.from_pandas(pd.read_csv(filename))
+        self.update_table()
+        
+    def on_add_chat_clicked(self):
+        print('add chat clicked')
+        chat = Chat.create_empty()
+        self.dataset.add_chat(chat)
+        self.main_window.add_chat_item([
+            chat.name, chat.language, len(chat)])
+        
+    def on_delete_chat_clicked(self, row_id):
+        print('delete chat clicked', row_id)
+        self.dataset.remove_chat(row_id)
+        
+    def on_chat_double_clicked(self, row_id):
+        print('chat double clicked', row_id)
+        chat_window = ChatWindow()
+        self.chat_controller = ChatController(
+            chat_window, self.dataset.get_chat(row_id))
+        
+        chat_window.set_close_callback(self.on_chat_window_close)
+        chat_window.show()
+    
+    def on_chat_window_close(self):
+        print('chat window closed')
+        self.chat_controller = None
+        self.update_table()
+        
+    def update_table(self):
+        self.main_window.clear()
+        for i in range(len(self.dataset)):
+            chat = self.dataset.get_chat(i)
+            self.main_window.add_chat_item([
+                chat.name, chat.language, len(chat)])
