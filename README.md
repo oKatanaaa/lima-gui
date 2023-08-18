@@ -34,6 +34,7 @@ Example chat:
 ## TODO
 
 - [ ] Safeguards not to lose data.
+- [ ] Message indices.
 - [ ] Huggingface integration (download and upload).
 - [ ] Token count using Huggingface tokenizers (LLAMA tokenizer by default).
 - [ ] Manual on how to use lima-gui.
