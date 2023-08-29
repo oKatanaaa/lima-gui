@@ -12,8 +12,7 @@ class SettingsController:
         self.settings_window.set_set_tokenizer_callback(self.on_set_tokenizer_clicked)
         self.settings_window.set_load_config_callback(self.on_load_config_clicked)
         
-        self.settings_window.set_tags(self.settings.tags)
-        self.settings_window.set_tokenizer_name(self.settings.tokenizer_name)
+        self.set_window_data()
         
     def on_set_tokenizer_clicked(self, tokenizer_name):
         self.settings.set_tokenizer(tokenizer_name)
@@ -24,4 +23,11 @@ class SettingsController:
         
         self.settings.set_tokenizer(config['tokenizer'])
         self.settings.tags = config['tags']
+        # Not displayed at the moment
         self.settings.languages = config.get('languages', ['en', 'ru'])
+        
+        self.set_window_data()
+    
+    def set_window_data(self):
+        self.settings_window.set_tags(self.settings.tags)
+        self.settings_window.set_tokenizer_name(self.settings.tokenizer_name)

@@ -1,0 +1,17 @@
+{
+	"languages": ["ru", "en"],
+	"tags": [
+		"summarization", 
+		"classification", 
+		"translation", 
+		"paraphrasing", 
+		"text continuation", 
+		"text infilling", 
+		"text enhancement", 
+		"question answering", 
+		"logic", 
+		"coding", 
+		"meta problems"
+	],
+	"tokenizer": "meta-llama/Llama-2-7b-hf"
+}

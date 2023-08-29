@@ -38,4 +38,5 @@ Example chat:
 - [ ] Huggingface integration (download and upload).
 - [x] Token count using Huggingface tokenizers (LLAMA tokenizer by default).
 - [ ] Manual on how to use lima-gui.
-- [ ] Tags for chats (like coding, logic, qa, etc).
+- [x] Tags for chats (like coding, logic, qa, etc).
+- [x] Default dataset config (contains config for languages, tags and tokenizer).
