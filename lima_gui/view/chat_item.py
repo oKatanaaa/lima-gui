@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget
 from .ui_chat_item import Ui_ChatItem
 
+
 class ChatItem(QWidget):
     def __init__(self, parent_item, parent=None):
         super().__init__(parent)

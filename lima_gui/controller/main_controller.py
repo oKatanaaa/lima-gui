@@ -1,8 +1,10 @@
 from lima_gui.view.main_window import MainWindow
 from lima_gui.view.chat_widget import ChatWindow
+from lima_gui.view.settings_window import SettingsWindow
 from lima_gui.model.chat_dataset import ChatDataset
 from lima_gui.model.chat import Chat
 from .chat_controller import ChatController
+from .settings_controller import SettingsController
 import pandas as pd
 
 
@@ -16,6 +18,7 @@ class Controller:
         self.main_window.set_chat_double_clicked_callback(self.on_chat_double_clicked)
         self.main_window.set_save_callback(self.on_save_triggered)
         self.main_window.set_open_callback(self.on_open_triggered)
+        self.main_window.set_settings_callback(self.on_settings_clicked)
         self.main_window.show()
         
         self.dataset = ChatDataset([])
@@ -55,6 +58,18 @@ class Controller:
     def on_chat_window_close(self):
         print('chat window closed')
         self.chat_controller = None
+        self.update_table()
+        
+    def on_settings_clicked(self):
+        settings_window = SettingsWindow()
+        self.settings_controller = SettingsController(settings_window)
+        
+        settings_window.set_close_callback(self.on_settings_window_close)
+        settings_window.show()
+        
+    def on_settings_window_close(self):
+        print('settings window closed')
+        self.settings_controller = None
         self.update_table()
         
     def update_table(self):

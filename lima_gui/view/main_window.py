@@ -48,6 +48,9 @@ class MainWindow(QMainWindow):
     def set_open_callback(self, callback):
         self.open_callback = callback
         
+    def set_settings_callback(self, callback):
+        self.ui.actionSettings.triggered.connect(callback)
+        
     def on_save_triggered(self):
         filename = QFileDialog.getSaveFileName(self, 'Save file', '', 'CSV (*.csv)')
         if filename[0]:

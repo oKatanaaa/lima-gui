@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowCEqkSM.ui'
+## Form generated from reading UI file 'main_windowQSiPEz.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -37,6 +37,8 @@ class Ui_MainWindow(object):
         self.actionEdit_chat.setObjectName(u"actionEdit_chat")
         self.actionSave = QAction(MainWindow)
         self.actionSave.setObjectName(u"actionSave")
+        self.actionSettings = QAction(MainWindow)
+        self.actionSettings.setObjectName(u"actionSettings")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -63,6 +65,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_New.menuAction())
         self.menu_New.addAction(self.actionOpen)
         self.menu_New.addAction(self.actionSave)
+        self.menu_New.addAction(self.actionSettings)
         self.toolBar.addAction(self.actionAdd_chat)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionDelete_chat)
@@ -84,6 +87,7 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.actionSave.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+S", None))
 #endif // QT_CONFIG(shortcut)
+        self.actionSettings.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.menu_New.setTitle(QCoreApplication.translate("MainWindow", u"&File", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
