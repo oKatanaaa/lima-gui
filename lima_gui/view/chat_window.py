@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QWidget, QMainWindow, QListWidgetItem
+from PySide6.QtCore import Qt
 from .ui_chat_widget import Ui_ChatWidget
 from .chat_item import ChatItem
 
@@ -14,23 +15,38 @@ class ChatWindow(QMainWindow):
         self.delete_msg_callback = None
         self.name_changed_callback = None
         self.language_changed_callback = None
+        self.tag_added_callback = None
+        self.tag_deleted_callback = None
         self.roles = []
         
         self.ui.delete_msg_btn.clicked.connect(self.on_delete_msg_clicked)
         self.ui.name.textChanged.connect(self.on_name_changed)
         self.ui.language.currentIndexChanged.connect(self.on_language_changed)
+        self.ui.addTagBtn.clicked.connect(self.on_tag_added)
+        self.ui.deleteTagBtn.clicked.connect(self.on_tag_deleted)
     
     def set_token_count(self, n_tokens: int):
         self.ui.n_tokens.setText(str(n_tokens))
         
+    def set_msg_count(self, msg_count: int):
+        self.ui.msg_count.setText(str(msg_count))
+
     def set_role_options(self, roles):
         self.roles = roles
-    
+
     def set_language_options(self, languages):
         self.ui.language.clear()
         for language in languages:
             self.ui.language.addItem(language)
-    
+
+    def set_tag_options(self, tags):
+        self.ui.tagComboBox.clear()
+        self.ui.tagComboBox.addItems(tags)
+
+    def set_tags(self, tags):
+        self.ui.tagList.clear()
+        self.ui.tagList.addItems(tags)
+
     def set_language(self, language):
         self.ui.language.setCurrentText(language)
     
@@ -74,6 +90,12 @@ class ChatWindow(QMainWindow):
     def set_language_changed_callback(self, callback):
         self.language_changed_callback = callback
         
+    def set_tag_added_callback(self, callback):
+        self.tag_added_callback = callback
+        
+    def set_tag_deleted_callback(self, callback):
+        self.tag_deleted_callback = callback
+        
     def on_delete_msg_clicked(self):
         row_id = self.ui.listWidget.currentRow()
         
@@ -97,3 +119,25 @@ class ChatWindow(QMainWindow):
     def on_language_changed(self):
         if self.language_changed_callback:
             self.language_changed_callback(self.ui.language.currentText())
+            
+    def on_tag_added(self):
+        print('window. on tag added')
+        tag = self.ui.tagComboBox.currentText()
+        
+        # Don't add existing tags
+        is_in_list = self.ui.tagList.findItems(tag, Qt.MatchExactly)
+        if is_in_list:
+            return
+        
+        self.ui.tagList.addItem(tag)
+        
+        if self.tag_added_callback:
+            self.tag_added_callback(tag)
+    
+    def on_tag_deleted(self):
+        row_id = self.ui.tagList.currentRow()
+        
+        tag = self.ui.tagList.takeItem(row_id).text()
+        
+        if self.tag_deleted_callback:
+            self.tag_deleted_callback(tag)

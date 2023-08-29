@@ -16,6 +16,7 @@ class ChatDataset:
                 "chat": [{
                     "name": chatname,
                     "lang": lang,
+                    "tags": { tag1, tag2, ... }, # it is a set
                     "dialog": [{"role": role, "content": content}]
             }]
         """

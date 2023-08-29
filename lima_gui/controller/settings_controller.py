@@ -24,3 +24,4 @@ class SettingsController:
         
         self.settings.set_tokenizer(config['tokenizer'])
         self.settings.tags = config['tags']
+        self.settings.languages = config.get('languages', ['en', 'ru'])

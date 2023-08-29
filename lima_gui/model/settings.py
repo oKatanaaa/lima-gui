@@ -25,9 +25,10 @@ class Settings:
             Settings.instance = Settings(Settings.DEFAULT_TAGS, Settings.DEFAULT_TOKENIZER)
         return Settings.instance
     
-    def __init__(self, tags: list, tokenizer_name: str):
+    def __init__(self, tags: list, tokenizer_name: str, languages: list = ['en', 'ru']):
         assert Settings.instance is None, 'Settings instance already exists. Please use get_instance method.'
         self.tags = tags
+        self.languages = languages
         self.set_tokenizer(tokenizer_name)
         
     def set_tokenizer(self, tokenizer_name: str):
