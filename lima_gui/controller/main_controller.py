@@ -1,5 +1,5 @@
 from lima_gui.view.main_window import MainWindow
-from lima_gui.view.chat_widget import ChatWindow
+from lima_gui.view.chat_window import ChatWindow
 from lima_gui.view.settings_window import SettingsWindow
 from lima_gui.model.chat_dataset import ChatDataset
 from lima_gui.model.chat import Chat

@@ -1,5 +1,6 @@
-from lima_gui.view.chat_widget import ChatWindow
+from lima_gui.view.chat_window import ChatWindow
 from lima_gui.model.chat import Chat
+from lima_gui.model.settings import Settings
 
 
 class ChatController:
@@ -8,6 +9,8 @@ class ChatController:
         self.chat_window = chat_window
         self.chat = chat
         
+        self.settings = Settings.get_instance()
+        
         self.chat_window.set_name(chat.name)
         self.chat_window.set_language_options(['ru', 'en'])
         self.chat_window.set_language(chat.language)
@@ -15,6 +18,7 @@ class ChatController:
         for msg in chat.chat['dialog']:
             role, content = msg['role'], msg['content']
             self.chat_window.add_msg(role, content)
+        self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
 
         self.chat_window.set_add_msg_clicked_callback(self.on_add_msg_clicked)
         self.chat_window.set_delete_msg_clicked_callback(self.on_delete_msg_clicked)
@@ -41,6 +45,7 @@ class ChatController:
     def on_msg_changed(self, ind, role, content):
         print('msg changed')
         self.chat.edit_msg(ind, role, content)
+        self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
     
     def on_delete_msg_clicked(self, ind):
         print('delete msg clicked')

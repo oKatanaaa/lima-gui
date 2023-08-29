@@ -19,6 +19,9 @@ class ChatWindow(QMainWindow):
         self.ui.delete_msg_btn.clicked.connect(self.on_delete_msg_clicked)
         self.ui.name.textChanged.connect(self.on_name_changed)
         self.ui.language.currentIndexChanged.connect(self.on_language_changed)
+    
+    def set_token_count(self, n_tokens: int):
+        self.ui.n_tokens.setText(str(n_tokens))
         
     def set_role_options(self, roles):
         self.roles = roles

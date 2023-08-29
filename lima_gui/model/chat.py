@@ -55,3 +55,6 @@ class Chat:
     
     def remove_msg(self, ind):
         self.chat["dialog"].pop(ind)
+        
+    def to_str(self):
+        return '\n'.join([msg['content'] for msg in self.chat['dialog']])
