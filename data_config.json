@@ -7,11 +7,13 @@
 		"paraphrasing", 
 		"text continuation", 
 		"text infilling", 
-		"text enhancement", 
+		"text enhancement",
+		"creative text generation",
 		"question answering", 
 		"logic", 
 		"coding", 
-		"meta problems"
+		"meta problems",
+		"conversational"
 	],
 	"tokenizer": "meta-llama/Llama-2-7b-hf"
 }

@@ -10,6 +10,7 @@ class ChatItem(QWidget):
         self.ui.setupUi(self)
         
         self.ui.textEdit.document().contentsChanged.connect(self.on_content_changed)
+        self.ui.textEdit.setAcceptRichText(False)
         self.content_changed_callback = None
     
     def set_content_changed_callback(self, callback):

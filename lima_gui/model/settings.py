@@ -5,6 +5,8 @@ class Settings:
     instance = None
     
     DEFAULT_TAGS = [
+        'conversational',
+        'functional',
         'summarization',
         'classification',
         'translation',
@@ -12,7 +14,9 @@ class Settings:
         'text continuation',
         'text infilling',
         'text enhancement',
-        'question answering',
+        'creative text generation',
+        'world qa',
+        'contextual qa',
         'logic',
         'coding',
         'meta problems'
