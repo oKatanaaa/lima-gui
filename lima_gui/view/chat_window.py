@@ -24,6 +24,8 @@ class ChatWindow(QMainWindow):
         self.ui.language.currentIndexChanged.connect(self.on_language_changed)
         self.ui.addTagBtn.clicked.connect(self.on_tag_added)
         self.ui.deleteTagBtn.clicked.connect(self.on_tag_deleted)
+        
+        self.ui.listWidget.verticalScrollBar().setSingleStep(10)
     
     def set_token_count(self, n_tokens: int):
         self.ui.n_tokens.setText(str(n_tokens))
@@ -106,9 +108,12 @@ class ChatWindow(QMainWindow):
 
     def on_item_changed(self, item):
         row_id = self.ui.listWidget.row(item)
+        row_item = self.ui.listWidget.item(row_id)
         
         chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
         role, content = chat_item.get_data()
+        
+        row_item.setSizeHint(chat_item.sizeHint())
         
         self.msg_changed_callback(row_id, role, content)
         

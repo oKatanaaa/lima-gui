@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'chat_itemXLmeRa.ui'
+## Form generated from reading UI file 'chat_itemySEPrC.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -23,20 +23,21 @@ class Ui_ChatItem(object):
     def setupUi(self, ChatItem):
         if not ChatItem.objectName():
             ChatItem.setObjectName(u"ChatItem")
-        ChatItem.resize(592, 139)
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        ChatItem.resize(592, 164)
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(ChatItem.sizePolicy().hasHeightForWidth())
         ChatItem.setSizePolicy(sizePolicy)
         self.verticalLayout_2 = QVBoxLayout(ChatItem)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setSizeConstraint(QLayout.SetMinimumSize)
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setSizeConstraint(QLayout.SetMinimumSize)
         self.widget = QWidget(ChatItem)
         self.widget.setObjectName(u"widget")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.widget.sizePolicy().hasHeightForWidth())
@@ -45,6 +46,7 @@ class Ui_ChatItem(object):
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setSizeConstraint(QLayout.SetMinimumSize)
         self.label = QLabel(self.widget)
         self.label.setObjectName(u"label")
 
@@ -52,8 +54,8 @@ class Ui_ChatItem(object):
 
         self.comboBox = QComboBox(self.widget)
         self.comboBox.setObjectName(u"comboBox")
-        sizePolicy.setHeightForWidth(self.comboBox.sizePolicy().hasHeightForWidth())
-        self.comboBox.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.comboBox.sizePolicy().hasHeightForWidth())
+        self.comboBox.setSizePolicy(sizePolicy1)
 
         self.horizontalLayout.addWidget(self.comboBox)
 
@@ -65,8 +67,8 @@ class Ui_ChatItem(object):
 
         self.textEdit = QTextEdit(ChatItem)
         self.textEdit.setObjectName(u"textEdit")
-        sizePolicy.setHeightForWidth(self.textEdit.sizePolicy().hasHeightForWidth())
-        self.textEdit.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.textEdit.sizePolicy().hasHeightForWidth())
+        self.textEdit.setSizePolicy(sizePolicy1)
         self.textEdit.setSizeIncrement(QSize(0, 0))
 
         self.verticalLayout.addWidget(self.textEdit)
