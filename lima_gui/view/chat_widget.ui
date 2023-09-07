@@ -28,6 +28,15 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+        <property name="verticalScrollMode">
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <property name="horizontalScrollMode">
+         <enum>QAbstractItemView::ScrollPerItem</enum>
+        </property>
         <property name="movement">
          <enum>QListView::Free</enum>
         </property>

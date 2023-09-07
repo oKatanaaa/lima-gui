@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'chat_widgetEhKaZk.ui'
+## Form generated from reading UI file 'chat_widgetsyhvXn.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -15,11 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QHBoxLayout,
-    QLabel, QLayout, QLineEdit, QListView,
-    QListWidget, QListWidgetItem, QMainWindow, QMenuBar,
-    QPushButton, QSizePolicy, QStatusBar, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QGridLayout,
+    QHBoxLayout, QLabel, QLayout, QLineEdit,
+    QListView, QListWidget, QListWidgetItem, QMainWindow,
+    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
+    QVBoxLayout, QWidget)
 
 class Ui_ChatWidget(object):
     def setupUi(self, ChatWidget):
@@ -40,6 +40,9 @@ class Ui_ChatWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.listWidget.sizePolicy().hasHeightForWidth())
         self.listWidget.setSizePolicy(sizePolicy)
+        self.listWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.listWidget.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
+        self.listWidget.setHorizontalScrollMode(QAbstractItemView.ScrollPerItem)
         self.listWidget.setMovement(QListView.Free)
         self.listWidget.setResizeMode(QListView.Adjust)
 

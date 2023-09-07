@@ -11,7 +11,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='lima-gui',
-    version='0.1.1',
+    version='0.2.1',
     description='A simple GUI utility for gathering LIMA-like chat data.',
     long_description=long_description,
     long_description_content_type="text/markdown",
