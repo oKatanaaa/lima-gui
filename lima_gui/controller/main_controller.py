@@ -19,6 +19,7 @@ class Controller:
         self.main_window.set_save_callback(self.on_save_triggered)
         self.main_window.set_open_callback(self.on_open_triggered)
         self.main_window.set_settings_callback(self.on_settings_clicked)
+        self.main_window.set_copy_chat_callback(self.on_copy_chat_clicked)
         self.main_window.show()
         
         self.dataset = ChatDataset([])
@@ -45,6 +46,17 @@ class Controller:
     def on_delete_chat_clicked(self, row_id):
         print('delete chat clicked', row_id)
         self.dataset.remove_chat(row_id)
+    
+    def on_copy_chat_clicked(self, row_id):
+        print('copy chat clicked', row_id)
+        if row_id == -1:
+            return
+        
+        chat = self.dataset.get_chat(row_id)
+        chat.name += ' (copy)'
+        self.dataset.add_chat(chat)
+        self.main_window.add_chat_item([
+            chat.name, chat.language, len(chat)])
         
     def on_chat_double_clicked(self, row_id):
         print('chat double clicked', row_id)

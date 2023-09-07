@@ -15,6 +15,8 @@ class MainWindow(QMainWindow):
         
         self.ui.actionDelete_chat.triggered.connect(
             self.on_delete_chat_triggered)
+        self.ui.actionCopy_chat.triggered.connect(
+            self.on_copy_chat_triggered)
         self.ui.tableWidget.itemDoubleClicked.connect(
             self.on_item_double_clicked)
         self.ui.actionSave.triggered.connect(
@@ -24,6 +26,8 @@ class MainWindow(QMainWindow):
         
         self.delete_chat_callback = None
         self.chat_double_click_callback = None
+        self.copy_chat_callback = None
+        
         self.save_callback = None
         self.open_callback = None
         
@@ -38,6 +42,9 @@ class MainWindow(QMainWindow):
     
     def set_delete_chat_callback(self, callback):
         self.delete_chat_callback = callback
+    
+    def set_copy_chat_callback(self, callback):
+        self.copy_chat_callback = callback
         
     def set_chat_double_clicked_callback(self, callback):
         self.chat_double_click_callback = callback
@@ -68,6 +75,12 @@ class MainWindow(QMainWindow):
             self.delete_chat_callback(row_id)
         # Remove item from view
         self.ui.tableWidget.removeRow(row_id)
+        
+    def on_copy_chat_triggered(self):
+        row_id = self.ui.tableWidget.currentRow()
+        
+        if self.copy_chat_callback:
+            self.copy_chat_callback(row_id)
         
     def on_item_double_clicked(self, item):
         row_id = self.ui.tableWidget.row(item)

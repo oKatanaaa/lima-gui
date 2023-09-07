@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowQSiPEz.ui'
+## Form generated from reading UI file 'main_windowEsZtcl.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -39,6 +39,8 @@ class Ui_MainWindow(object):
         self.actionSave.setObjectName(u"actionSave")
         self.actionSettings = QAction(MainWindow)
         self.actionSettings.setObjectName(u"actionSettings")
+        self.actionCopy_chat = QAction(MainWindow)
+        self.actionCopy_chat.setObjectName(u"actionCopy_chat")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -70,6 +72,7 @@ class Ui_MainWindow(object):
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionDelete_chat)
         self.toolBar.addSeparator()
+        self.toolBar.addAction(self.actionCopy_chat)
 
         self.retranslateUi(MainWindow)
 
@@ -81,6 +84,9 @@ class Ui_MainWindow(object):
         self.actionAdd_chat.setText(QCoreApplication.translate("MainWindow", u"Add chat", None))
         self.actionDelete_chat.setText(QCoreApplication.translate("MainWindow", u"Delete chat", None))
         self.actionOpen.setText(QCoreApplication.translate("MainWindow", u"Open", None))
+#if QT_CONFIG(shortcut)
+        self.actionOpen.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+R", None))
+#endif // QT_CONFIG(shortcut)
         self.actionNew.setText(QCoreApplication.translate("MainWindow", u"New", None))
         self.actionEdit_chat.setText(QCoreApplication.translate("MainWindow", u"Edit chat", None))
         self.actionSave.setText(QCoreApplication.translate("MainWindow", u"Save", None))
@@ -88,6 +94,10 @@ class Ui_MainWindow(object):
         self.actionSave.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+S", None))
 #endif // QT_CONFIG(shortcut)
         self.actionSettings.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
+        self.actionCopy_chat.setText(QCoreApplication.translate("MainWindow", u"Copy chat", None))
+#if QT_CONFIG(shortcut)
+        self.actionCopy_chat.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+C", None))
+#endif // QT_CONFIG(shortcut)
         self.menu_New.setTitle(QCoreApplication.translate("MainWindow", u"&File", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi

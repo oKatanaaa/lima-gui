@@ -35,6 +35,8 @@ Example chat:
 
 - [ ] Safeguards not to lose data.
 - [ ] Message indices.
+- [ ] Somehow refactor current shitty chat UI.
+    - [ ] Make scrolling smooth.
 - [ ] Huggingface integration (download and upload).
 - [x] Token count using Huggingface tokenizers (LLAMA tokenizer by default).
 - [ ] Manual on how to use lima-gui.

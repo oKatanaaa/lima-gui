@@ -54,6 +54,7 @@
    <addaction name="separator"/>
    <addaction name="actionDelete_chat"/>
    <addaction name="separator"/>
+   <addaction name="actionCopy_chat"/>
   </widget>
   <action name="actionAdd_chat">
    <property name="text">
@@ -68,6 +69,9 @@
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionNew">
@@ -91,6 +95,14 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionCopy_chat">
+   <property name="text">
+    <string>Copy chat</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
    </property>
   </action>
  </widget>
