@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'chat_itemySEPrC.ui'
+## Form generated from reading UI file 'chat_itemKKMmNd.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -56,6 +56,7 @@ class Ui_ChatItem(object):
         self.comboBox.setObjectName(u"comboBox")
         sizePolicy1.setHeightForWidth(self.comboBox.sizePolicy().hasHeightForWidth())
         self.comboBox.setSizePolicy(sizePolicy1)
+        self.comboBox.setFocusPolicy(Qt.NoFocus)
 
         self.horizontalLayout.addWidget(self.comboBox)
 

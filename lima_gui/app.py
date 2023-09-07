@@ -10,4 +10,4 @@ if __name__ == '__main__':
     main_window = MainWindow()
     controller = Controller(main_window)
     main_window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
