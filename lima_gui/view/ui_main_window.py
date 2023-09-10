@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowEsZtcl.ui'
+## Form generated from reading UI file 'main_windowhcZjkz.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -41,6 +41,8 @@ class Ui_MainWindow(object):
         self.actionSettings.setObjectName(u"actionSettings")
         self.actionCopy_chat = QAction(MainWindow)
         self.actionCopy_chat.setObjectName(u"actionCopy_chat")
+        self.actionOpenAI_API = QAction(MainWindow)
+        self.actionOpenAI_API.setObjectName(u"actionOpenAI_API")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -56,6 +58,8 @@ class Ui_MainWindow(object):
         self.menubar.setGeometry(QRect(0, 0, 770, 22))
         self.menu_New = QMenu(self.menubar)
         self.menu_New.setObjectName(u"menu_New")
+        self.menuOpenAI_API = QMenu(self.menubar)
+        self.menuOpenAI_API.setObjectName(u"menuOpenAI_API")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -65,9 +69,11 @@ class Ui_MainWindow(object):
         MainWindow.addToolBar(Qt.TopToolBarArea, self.toolBar)
 
         self.menubar.addAction(self.menu_New.menuAction())
+        self.menubar.addAction(self.menuOpenAI_API.menuAction())
         self.menu_New.addAction(self.actionOpen)
         self.menu_New.addAction(self.actionSave)
-        self.menu_New.addAction(self.actionSettings)
+        self.menuOpenAI_API.addAction(self.actionOpenAI_API)
+        self.menuOpenAI_API.addAction(self.actionSettings)
         self.toolBar.addAction(self.actionAdd_chat)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionDelete_chat)
@@ -93,12 +99,14 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.actionSave.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+S", None))
 #endif // QT_CONFIG(shortcut)
-        self.actionSettings.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
+        self.actionSettings.setText(QCoreApplication.translate("MainWindow", u"Config", None))
         self.actionCopy_chat.setText(QCoreApplication.translate("MainWindow", u"Copy chat", None))
 #if QT_CONFIG(shortcut)
         self.actionCopy_chat.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+C", None))
 #endif // QT_CONFIG(shortcut)
+        self.actionOpenAI_API.setText(QCoreApplication.translate("MainWindow", u"OpenAI API", None))
         self.menu_New.setTitle(QCoreApplication.translate("MainWindow", u"&File", None))
+        self.menuOpenAI_API.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 

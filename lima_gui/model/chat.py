@@ -81,6 +81,9 @@ class Chat:
     
     def remove_tag(self, tag):
         self.chat["tags"].remove(tag)
+        
+    def get_conversation_history(self, ind):
+        return self.chat["dialog"][:ind]
 
     def to_str(self):
         return '\n'.join([msg['content'] for msg in self.chat['dialog']])

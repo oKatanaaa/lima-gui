@@ -1,7 +1,7 @@
 import json
 
 from lima_gui.view.settings_window import SettingsWindow
-from lima_gui.model.settings import Settings
+from lima_gui.state.settings import Settings
 
 
 class SettingsController:

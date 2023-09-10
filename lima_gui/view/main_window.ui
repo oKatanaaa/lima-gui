@@ -35,9 +35,16 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
+   </widget>
+   <widget class="QMenu" name="menuOpenAI_API">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionOpenAI_API"/>
     <addaction name="actionSettings"/>
    </widget>
    <addaction name="menu_New"/>
+   <addaction name="menuOpenAI_API"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -94,7 +101,7 @@
   </action>
   <action name="actionSettings">
    <property name="text">
-    <string>Settings</string>
+    <string>Config</string>
    </property>
   </action>
   <action name="actionCopy_chat">
@@ -103,6 +110,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionOpenAI_API">
+   <property name="text">
+    <string>OpenAI API</string>
    </property>
   </action>
  </widget>

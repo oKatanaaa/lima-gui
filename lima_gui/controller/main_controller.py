@@ -5,12 +5,14 @@ from lima_gui.model.chat_dataset import ChatDataset
 from lima_gui.model.chat import Chat
 from .chat_controller import ChatController
 from .settings_controller import SettingsController
+from .openai_controller import OpenAIController
 import pandas as pd
 
 
 class Controller:
     def __init__(self, main_window: MainWindow):
         self.main_window = main_window
+        self.openai_controller = OpenAIController(self.main_window.openai_window)
         self.main_window.set_column_names(['Chat name', 'Language', 'Msg count'])
         
         self.main_window.set_add_chat_callback(self.on_add_chat_clicked)

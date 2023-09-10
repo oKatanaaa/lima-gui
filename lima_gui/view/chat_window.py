@@ -9,7 +9,7 @@ class ChatWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_ChatWidget()
         self.ui.setupUi(self)
-
+        
         self.close_callback = None
         self.msg_changed_callback = None
         self.delete_msg_callback = None
@@ -17,7 +17,12 @@ class ChatWindow(QMainWindow):
         self.language_changed_callback = None
         self.tag_added_callback = None
         self.tag_deleted_callback = None
+        self.generate_callback = None
+        
+        self.is_generate_allowed = False
+
         self.roles = []
+        self.generator_role = 'assistant'
         
         self.ui.delete_msg_btn.clicked.connect(self.on_delete_msg_clicked)
         self.ui.name.textChanged.connect(self.on_name_changed)
@@ -26,15 +31,19 @@ class ChatWindow(QMainWindow):
         self.ui.deleteTagBtn.clicked.connect(self.on_tag_deleted)
         
         self.ui.listWidget.verticalScrollBar().setSingleStep(10)
-    
+        self.ui.listWidget.itemSelectionChanged.connect(self.on_item_selection_changed)
+        
+        self.ui.generate_btn.clicked.connect(self.on_generate_clicked)
+        
     def set_token_count(self, n_tokens: int):
         self.ui.n_tokens.setText(str(n_tokens))
         
     def set_msg_count(self, msg_count: int):
         self.ui.msg_count.setText(str(msg_count))
 
-    def set_role_options(self, roles):
+    def set_role_options(self, roles, generator_role):
         self.roles = roles
+        self.generator_role = generator_role
 
     def set_language_options(self, languages):
         self.ui.language.clear()
@@ -97,6 +106,9 @@ class ChatWindow(QMainWindow):
         
     def set_tag_deleted_callback(self, callback):
         self.tag_deleted_callback = callback
+    
+    def set_generate_callback(self, callback):
+        self.generate_callback = callback
         
     def on_delete_msg_clicked(self):
         row_id = self.ui.listWidget.currentRow()
@@ -146,3 +158,19 @@ class ChatWindow(QMainWindow):
         
         if self.tag_deleted_callback:
             self.tag_deleted_callback(tag)
+            
+    def on_item_selection_changed(self):
+        row_id = self.ui.listWidget.currentRow()
+        item = self.ui.listWidget.item(row_id)
+        chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
+        role, content = chat_item.get_data()
+        print('role == self.generator_role:', role == self.generator_role)
+        print('self.is_generate_allowed:', self.is_generate_allowed)
+        self.ui.generate_btn.setEnabled(role == self.generator_role and self.is_generate_allowed)
+
+    def on_generate_clicked(self):
+        row_id = self.ui.listWidget.currentRow()
+        item = self.ui.listWidget.item(row_id)
+        chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
+        if self.generate_callback is not None:
+            self.generate_callback(row_id, chat_item)

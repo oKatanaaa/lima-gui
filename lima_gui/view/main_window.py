@@ -1,7 +1,7 @@
-import sys
 from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QMainWindow, QTableWidgetItem, QFileDialog
 
 from .ui_main_window import Ui_MainWindow
+from .openai_window import OpenaiWindow
 
 
 class MainWindow(QMainWindow):
@@ -9,6 +9,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        
+        self.openai_window = OpenaiWindow()
         
         self.ui.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.ui.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -23,7 +25,8 @@ class MainWindow(QMainWindow):
             self.on_save_triggered)
         self.ui.actionOpen.triggered.connect(
             self.on_open_triggered)
-        
+        self.ui.actionOpenAI_API.triggered.connect(
+            self.on_openai_api_triggered)
         self.delete_chat_callback = None
         self.chat_double_click_callback = None
         self.copy_chat_callback = None
@@ -87,6 +90,9 @@ class MainWindow(QMainWindow):
         
         if self.chat_double_click_callback:
             self.chat_double_click_callback(row_id)
+            
+    def on_openai_api_triggered(self):
+        self.openai_window.show()
     
     def add_chat_item(self, data: list):
         self.ui.tableWidget.insertRow(self.ui.tableWidget.rowCount())

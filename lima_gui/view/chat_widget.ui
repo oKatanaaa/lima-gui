@@ -64,6 +64,16 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="generate_btn">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Generate selected</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>

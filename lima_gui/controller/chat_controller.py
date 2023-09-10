@@ -1,7 +1,39 @@
-from lima_gui.view.chat_window import ChatWindow
-from lima_gui.model.chat import Chat
-from lima_gui.model.settings import Settings
+from PySide6.QtCore import QThread, Qt, Signal
+import time
 
+from lima_gui.view.chat_window import ChatWindow
+from lima_gui.view.chat_item import ChatItem
+from lima_gui.model.chat import Chat
+from lima_gui.state.settings import Settings
+from lima_gui.state.openai import OpenAIService
+
+
+class ChatItemUpdater(QThread):
+    update_period_sec = 0.25
+    update_signal = Signal(str)
+    
+    def __init__(self, chat_item: ChatItem, conversation, assistant_role):
+        super().__init__()
+        self.chat_item = chat_item
+        self.openai_service = OpenAIService.get_instance()
+        self.conversation = conversation
+        self.assistant_role = assistant_role
+        self.update_signal.connect(self.update_text)
+    
+    def run(self):
+        text = ''
+        time_past = 0.0
+        for delta_time, chunk in self.openai_service.generate_response(self.conversation):
+            text += chunk
+            time_past += delta_time
+            if time_past > self.update_period_sec:
+                self.update_signal.emit(text)
+                time_past = 0.0
+        self.update_signal.emit(text)
+
+    def update_text(self, text):
+        self.chat_item.set_data(self.assistant_role, text)
+        
 
 class ChatController:
     def __init__(self, chat_window: ChatWindow, chat: Chat):
@@ -10,11 +42,12 @@ class ChatController:
         self.chat = chat
         
         self.settings = Settings.get_instance()
+        self.openai_service = OpenAIService.get_instance()
         
         self.chat_window.set_name(chat.name)
         self.chat_window.set_language_options(self.settings.languages)
         self.chat_window.set_language(chat.language)
-        self.chat_window.set_role_options(['system', 'user', 'assistant'])
+        self.chat_window.set_role_options(['system', 'user', 'assistant'], 'assistant')
         for msg in chat.chat['dialog']:
             role, content = msg['role'], msg['content']
             self.chat_window.add_msg(role, content)
@@ -22,6 +55,8 @@ class ChatController:
         self.chat_window.set_tag_options(self.settings.tags)
         self.chat_window.set_tags(chat.tags)
         self.chat_window.set_msg_count(len(chat.chat['dialog']))
+        self.chat_window.is_generate_allowed = self.openai_service.enabled
+        print('created chat controller, openai service enabled: ', self.openai_service.enabled)
 
         self.chat_window.set_add_msg_clicked_callback(self.on_add_msg_clicked)
         self.chat_window.set_delete_msg_clicked_callback(self.on_delete_msg_clicked)
@@ -30,6 +65,9 @@ class ChatController:
         self.chat_window.set_language_changed_callback(self.on_language_changed)
         self.chat_window.set_tag_added_callback(self.on_tag_added)
         self.chat_window.set_tag_deleted_callback(self.on_tag_deleted)
+        self.chat_window.set_generate_callback(self.on_generate_clicked)
+        
+        self.chat_item_updater = None
     
     def on_add_msg_clicked(self):
         print('add msg clicked')
@@ -73,3 +111,14 @@ class ChatController:
     def on_tag_deleted(self, tag):
         print('tag deleted')
         self.chat.remove_tag(tag)
+        
+    def on_generate_clicked(self, ind, chat_item):
+        print('generate clicked')
+        conversation = self.chat.get_conversation_history(ind)
+        self.chat_item_updater = ChatItemUpdater(
+            chat_item=chat_item,
+            conversation=conversation,
+            assistant_role='assistant'
+        )
+        self.chat_item_updater.start()
+

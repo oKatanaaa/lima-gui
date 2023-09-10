@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'chat_widgeteoWHlv.ui'
+## Form generated from reading UI file 'chat_widgetgJUEyG.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -63,6 +63,12 @@ class Ui_ChatWidget(object):
         self.delete_msg_btn.setObjectName(u"delete_msg_btn")
 
         self.horizontalLayout.addWidget(self.delete_msg_btn)
+
+        self.generate_btn = QPushButton(self.widget)
+        self.generate_btn.setObjectName(u"generate_btn")
+        self.generate_btn.setEnabled(False)
+
+        self.horizontalLayout.addWidget(self.generate_btn)
 
 
         self.horizontalLayout_2.addLayout(self.horizontalLayout)
@@ -219,6 +225,7 @@ class Ui_ChatWidget(object):
         ChatWidget.setWindowTitle(QCoreApplication.translate("ChatWidget", u"MainWindow", None))
         self.add_msg_btn.setText(QCoreApplication.translate("ChatWidget", u"Add message", None))
         self.delete_msg_btn.setText(QCoreApplication.translate("ChatWidget", u"Delete message", None))
+        self.generate_btn.setText(QCoreApplication.translate("ChatWidget", u"Generate selected", None))
         self.label_5.setText(QCoreApplication.translate("ChatWidget", u"Msg count", None))
         self.msg_count.setText(QCoreApplication.translate("ChatWidget", u"null", None))
         self.label.setText(QCoreApplication.translate("ChatWidget", u"Name", None))
