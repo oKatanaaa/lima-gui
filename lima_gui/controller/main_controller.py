@@ -1,3 +1,6 @@
+import pandas as pd
+from functools import partial
+
 from lima_gui.view.main_window import MainWindow
 from lima_gui.view.chat_window import ChatWindow
 from lima_gui.view.settings_window import SettingsWindow
@@ -6,7 +9,6 @@ from lima_gui.model.chat import Chat
 from .chat_controller import ChatController
 from .settings_controller import SettingsController
 from .openai_controller import OpenAIController
-import pandas as pd
 
 
 class Controller:
@@ -26,7 +28,7 @@ class Controller:
         
         self.dataset = ChatDataset([])
         
-        self.chat_controller = None
+        self.chat_controllers = set()
     
     def on_save_triggered(self, filename):
         print('save triggered', filename)
@@ -63,15 +65,17 @@ class Controller:
     def on_chat_double_clicked(self, row_id):
         print('chat double clicked', row_id)
         chat_window = ChatWindow()
-        self.chat_controller = ChatController(
+        chat_controller = ChatController(
             chat_window, self.dataset.get_chat(row_id))
+        self.chat_controllers.add(chat_controller)
         
-        chat_window.set_close_callback(self.on_chat_window_close)
+        chat_window.set_close_callback(
+            partial(self.on_chat_window_close, chat_controller=chat_controller))
         chat_window.show()
     
-    def on_chat_window_close(self):
+    def on_chat_window_close(self, chat_controller):
         print('chat window closed')
-        self.chat_controller = None
+        self.chat_controllers.pop(chat_controller)
         self.update_table()
         
     def on_settings_clicked(self):
