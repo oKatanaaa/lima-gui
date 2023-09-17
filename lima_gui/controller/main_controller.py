@@ -75,7 +75,7 @@ class Controller:
     
     def on_chat_window_close(self, chat_controller):
         print('chat window closed')
-        self.chat_controllers.pop(chat_controller)
+        self.chat_controllers.remove(chat_controller)
         self.update_table()
         
     def on_settings_clicked(self):

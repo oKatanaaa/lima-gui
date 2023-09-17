@@ -1,4 +1,5 @@
 from PySide6.QtCore import QThread, Qt, Signal
+from PySide6.QtCore import QTimer
 import time
 
 from lima_gui.view.chat_window import ChatWindow
@@ -66,6 +67,11 @@ class ChatController:
         self.chat_window.set_tag_added_callback(self.on_tag_added)
         self.chat_window.set_tag_deleted_callback(self.on_tag_deleted)
         self.chat_window.set_generate_callback(self.on_generate_clicked)
+        
+        # Make sure the list is scrolled to the bottom.
+        # There is a problem that the chat items are not rendered at the time of adding
+        # which makes their sizes wrong (they get correct sizes after rendering) and it breaks scrolling.
+        QTimer.singleShot(100, self.chat_window.ui.listWidget.scrollToBottom)
         
         self.chat_item_updater = None
     

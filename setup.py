@@ -16,7 +16,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Kilbas Igor',
-    author_email='igor.kibas.ai@gmai.com',
+    author_email='igor.kibas.ai@gmail.com',
     url='https://www.python.org/sigs/distutils-sig/',
     classifiers=[
         'Programming Language :: Python :: 3',

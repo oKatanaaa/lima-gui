@@ -37,7 +37,7 @@ Example chat:
 - [ ] Somehow refactor current shitty chat UI.
     - [x] Make scrolling smooth.
     - [x] Make list items fit message contents.
-    - [ ] Scrolling at the end of the list.
+    - [x] Scrolling at the end of the list on opening.
     - [ ] Select/Focus newly added item.
     - [ ] Scroll down the focused ChatItem during AI text generation.
 - [ ] Huggingface integration (download and upload).
