@@ -1,7 +1,7 @@
-import PySide6.QtCore
-from PySide6.QtWidgets import QWidget
+from PySide6.QtGui import QKeyEvent, QTextCursor
+from PySide6.QtWidgets import QTextEdit, QWidget
+from PySide6.QtCore import Qt
 from .ui_chat_item import Ui_ChatItem
-
 
 class ChatItem(QWidget):
     def __init__(self, parent_item, parent=None):
@@ -25,6 +25,43 @@ class ChatItem(QWidget):
             'user': '#ebf2ff',
             'assistant': '#ebfff6',
         }
+        # Add an attribute to keep track of auto-indentation
+        self.auto_indent_next_line = True
+        self.ui.textEdit.keyPressEvent = self.handleKeyPressEvent
+
+    # TextEdit modified keyPressEvent
+    # Keeps tabulation on the same level as the previous line
+    def handleKeyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key_Tab:
+            # Insert four spaces
+            self.ui.textEdit.insertPlainText('    ')
+            return  # Consume the event to prevent default behavior
+    
+        if event.key() == Qt.Key_Return:
+            # Fetch the current line's indentation
+            cursor = self.ui.textEdit.textCursor()
+            cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.KeepAnchor)  # Adjusted for PySide6
+            leading_spaces = len(cursor.selectedText()) - len(cursor.selectedText().lstrip())
+            
+            # Enter and apply auto-indentation only if required
+            QTextEdit.keyPressEvent(self.ui.textEdit, event)
+            if self.auto_indent_next_line:
+                self.ui.textEdit.insertPlainText(' ' * leading_spaces)
+            else:
+                # Reset flag for next time
+                self.auto_indent_next_line = True
+            return
+
+        # Detect backspaces at the start of a line (to disable auto-indentation on the next line)
+        if event.key() == Qt.Key.Key_Backspace:
+            cursor = self.ui.textEdit.textCursor()
+            cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.KeepAnchor)  # Adjusted for PySide6
+            if not cursor.selectedText().strip():
+                self.auto_indent_next_line = False
+
+        # Default handler
+        QTextEdit.keyPressEvent(self.ui.textEdit, event)
+
     
     def set_content_changed_callback(self, callback):
         self.content_changed_callback = callback

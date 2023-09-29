@@ -81,6 +81,9 @@
          <height>0</height>
         </size>
        </property>
+       <property name="tabStopDistance">
+        <double>25.000000000000000</double>
+       </property>
        <property name="placeholderText">
         <string>content</string>
        </property>

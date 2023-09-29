@@ -46,3 +46,5 @@ Example chat:
 - [x] Tags for chats (like coding, logic, qa, etc).
 - [x] Default dataset config (contains config for languages, tags and tokenizer).
 - [x] OpenAI API integration to allow for AI generated answers.
+    - [x] Chat API support.
+    - [ ] Completion API support.

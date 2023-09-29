@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'chat_itemirgkts.ui'
+## Form generated from reading UI file 'chat_itemwhwsrl.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -71,6 +71,7 @@ class Ui_ChatItem(object):
         sizePolicy1.setHeightForWidth(self.textEdit.sizePolicy().hasHeightForWidth())
         self.textEdit.setSizePolicy(sizePolicy1)
         self.textEdit.setSizeIncrement(QSize(0, 0))
+        self.textEdit.setTabStopDistance(25.000000000000000)
 
         self.verticalLayout.addWidget(self.textEdit)
 
