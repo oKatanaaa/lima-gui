@@ -1,5 +1,6 @@
 import pandas as pd
 from functools import partial
+from copy import deepcopy
 
 from lima_gui.view.main_window import MainWindow
 from lima_gui.view.chat_window import ChatWindow
@@ -57,6 +58,7 @@ class Controller:
             return
         
         chat = self.dataset.get_chat(row_id)
+        chat = deepcopy(chat)
         chat.name += ' (copy)'
         self.dataset.add_chat(chat)
         self.main_window.add_chat_item([
