@@ -40,12 +40,14 @@ Example chat:
     - [x] Scrolling at the end of the list on opening.
     - [ ] Select/Focus newly added item.
     - [ ] Scroll down the focused ChatItem during AI text generation.
-- [ ] Huggingface integration (download and upload).
+    - [ ] Automatically focus the item you are typing in.
+- [ ] Huggingface integration (download and upload the dataset).
 - [x] Token count using Huggingface tokenizers (LLAMA tokenizer by default).
 - [ ] Manual on how to use lima-gui.
 - [x] Tags for chats (like coding, logic, qa, etc).
 - [x] Default dataset config (contains config for languages, tags and tokenizer).
 - [x] OpenAI API integration to allow for AI generated answers.
     - [x] Chat API support.
-    - [ ] Completion API support.
+    - [x] Completion API support.
+    - [ ] Token count support.
 - [x] Keep tabulation.

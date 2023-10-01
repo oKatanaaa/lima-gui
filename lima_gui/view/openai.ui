@@ -20,15 +20,26 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="4" column="2">
-       <widget class="QLineEdit" name="temperature_lineEdit">
+      <item row="2" column="1">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>0.7</string>
+         <string>Model</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="2">
-       <widget class="QComboBox" name="comboBox"/>
+      <item row="6" column="1">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Completion tokens</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QCheckBox" name="checkBox">
+        <property name="text">
+         <string>Enable API</string>
+        </property>
+       </widget>
       </item>
       <item row="0" column="2">
        <widget class="QLineEdit" name="apiBase_lineEdit">
@@ -37,10 +48,41 @@
         </property>
        </widget>
       </item>
+      <item row="5" column="2">
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="temperature_lineEdit">
+        <property name="text">
+         <string>0.7</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>API key</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>API base</string>
+        </property>
+       </widget>
+      </item>
       <item row="4" column="1">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Temperature</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>API type</string>
         </property>
        </widget>
       </item>
@@ -57,55 +99,20 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QLabel" name="label_5">
+      <item row="6" column="2">
+       <widget class="QLineEdit" name="completionTokens_lineEdit">
         <property name="text">
-         <string>API type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Model</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <widget class="QCheckBox" name="checkBox">
-        <property name="text">
-         <string>Enable API</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>API key</string>
+         <string>200</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
        <widget class="QLineEdit" name="apiKey_lineEdit"/>
       </item>
-      <item row="6" column="1">
-       <widget class="QLabel" name="label_6">
+      <item row="7" column="2">
+       <widget class="QPushButton" name="copyKey_pushButton">
         <property name="text">
-         <string>Completion tokens</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>API base</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="2">
-       <widget class="QLineEdit" name="completionTokens_lineEdit">
-        <property name="text">
-         <string>15</string>
+         <string>Copy key from ENV</string>
         </property>
        </widget>
       </item>
