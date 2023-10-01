@@ -22,15 +22,22 @@ class ChatItemUpdater(QThread):
         self.update_signal.connect(self.update_text)
     
     def run(self):
+        context = self.chat_item.get_cursor_context()
+        before, after = context
+        if self.openai_service.get_api_type() == OpenAIService.API_TYPE_CHAT:
+            before, after = '', ''
+        text_postprocessor = lambda text: before + text + after
+        
         text = ''
         time_past = 0.0
-        for delta_time, chunk in self.openai_service.generate_response(self.conversation):
+        for delta_time, chunk in self.openai_service.generate_response(
+            self.conversation, context):
             text += chunk
             time_past += delta_time
             if time_past > self.update_period_sec:
-                self.update_signal.emit(text)
+                self.update_signal.emit(text_postprocessor(text))
                 time_past = 0.0
-        self.update_signal.emit(text)
+        self.update_signal.emit(text_postprocessor(text))
 
     def update_text(self, text):
         self.chat_item.set_data(self.assistant_role, text)

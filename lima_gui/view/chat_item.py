@@ -62,6 +62,18 @@ class ChatItem(QWidget):
         # Default handler
         QTextEdit.keyPressEvent(self.ui.textEdit, event)
 
+    def get_cursor_context(self):
+        cursor = self.ui.textEdit.textCursor()
+
+        # Get the current position of the cursor
+        cursor_position = cursor.position()
+
+        # Get the text of the entire QTextEdit
+        full_text = self.ui.textEdit.toPlainText()
+        text_before_cursor = full_text[:cursor_position]
+        text_after_cursor = full_text[cursor_position:]
+
+        return text_before_cursor, text_after_cursor
     
     def set_content_changed_callback(self, callback):
         self.content_changed_callback = callback

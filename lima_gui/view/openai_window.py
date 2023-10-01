@@ -12,12 +12,18 @@ class OpenaiWindow(QWidget):
         self.ui.apiKey_lineEdit.textChanged.connect(self.on_settings_changed)
         self.ui.modelName_lineEdit.textChanged.connect(self.on_settings_changed)
         self.ui.temperature_lineEdit.textChanged.connect(self.on_settings_changed)
+        self.ui.comboBox.currentIndexChanged.connect(self.on_settings_changed)
         
         self.ui.checkBox.stateChanged.connect(self.on_api_enabled)
         
         self.api_enabled_callback = None
         self.settings_changed_callback = None
-        
+    
+    def set_api_types(self, types, default_type):
+        self.ui.comboBox.clear()
+        self.ui.comboBox.addItems(types)
+        self.ui.comboBox.setCurrentText(default_type)
+
     def set_api_enabled_callback(self, callback):
         self.api_enabled_callback = callback
         
@@ -33,13 +39,15 @@ class OpenaiWindow(QWidget):
         api_key = self.ui.apiKey_lineEdit.text()
         model_name = self.ui.modelName_lineEdit.text()
         temperature = float(self.ui.temperature_lineEdit.text())
+        api_type = self.ui.comboBox.currentText()
         
         if self.settings_changed_callback:
             self.settings_changed_callback(
                 api_base,
                 api_key,
                 model_name,
-                temperature
+                temperature,
+                api_type
             )
 
 

@@ -48,3 +48,4 @@ Example chat:
 - [x] OpenAI API integration to allow for AI generated answers.
     - [x] Chat API support.
     - [ ] Completion API support.
+- [x] Keep tabulation.
