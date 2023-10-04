@@ -98,6 +98,8 @@ On the horizon: I'm looking to integrate Huggingface with LIMA-GUI. Specifically
 1. First install the lima-gui by running `pip install -e .` in the repo folder.
 2. Run `python -m lima_gui.app`
 
+If you experience any problem, please make a corresponding issue.
+
 ## TODO
 
 - [ ] Safeguards not to lose data.
@@ -124,3 +126,8 @@ On the horizon: I'm looking to integrate Huggingface with LIMA-GUI. Specifically
 - [x] Keep tabulation.
 - [ ] Save settings/current config.
 - [ ] Import ChatGPT exported dialogues.
+- [ ] Stats board that shows various useful statistics about current data (token count distribution, number of samples by tags/languages).
+
+## Pull requests
+
+Any changes that simplify or make data gathering more comfortable (UI/UX, QoL, tools, etc) are welcome.
