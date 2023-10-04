@@ -21,7 +21,7 @@ class Settings:
         'coding',
         'meta problems'
     ]
-    DEFAULT_TOKENIZER = 'meta-llama/Llama-2-7b-hf'
+    DEFAULT_TOKENIZER = 'OpenAssistant/llama2-13b-orca-8k-3319'
     
     @staticmethod
     def get_instance():
