@@ -123,3 +123,4 @@ On the horizon: I'm looking to integrate Huggingface with LIMA-GUI. Specifically
     - [ ] Token count support.
 - [x] Keep tabulation.
 - [ ] Save settings/current config.
+- [ ] Import ChatGPT exported dialogues.
