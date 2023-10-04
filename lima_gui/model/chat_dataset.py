@@ -51,4 +51,7 @@ class ChatDataset:
             chat = json.loads(chat_str)
             chats.append(chat)
         return ChatDataset(chats)
-
+    
+    @staticmethod
+    def from_csv(filename) -> 'ChatDataset':
+        return ChatDataset.from_pandas(pd.read_csv(filename))

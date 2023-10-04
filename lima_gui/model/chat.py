@@ -87,3 +87,7 @@ class Chat:
 
     def to_str(self):
         return '\n'.join([msg['content'] for msg in self.chat['dialog']])
+    
+    def __repr__(self):
+        return str(self.chat)
+
