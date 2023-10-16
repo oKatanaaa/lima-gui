@@ -115,6 +115,7 @@ If you experience any problem, please make a corresponding issue.
     - [ ] Scroll down the focused ChatItem during AI text generation.
     - [ ] Automatically focus the item you are typing in.
 - [ ] Huggingface integration (download/upload the dataset).
+- [ ] Deletion of multiple 
 - [x] Token count using Huggingface tokenizers (LLAMA tokenizer by default).
 - [ ] Manual on how to use lima-gui.
 - [x] Tags for chats (like coding, logic, qa, etc).
@@ -123,6 +124,10 @@ If you experience any problem, please make a corresponding issue.
     - [x] Chat API support.
     - [x] Completion API support.
     - [ ] Token count support.
+    - [ ] Stopping generation (!).
+    - [ ] Function calling.
+        - [ ] Proper UI for function call messages.
+        - [ ] Function roles.
 - [x] Keep tabulation.
 - [ ] Save settings/current config.
 - [ ] Import ChatGPT exported dialogues.

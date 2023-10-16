@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'chat_widgetgJUEyG.ui'
+## Form generated from reading UI file 'chat_widgetqZjmcd.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QGrid
     QHBoxLayout, QLabel, QLayout, QLineEdit,
     QListView, QListWidget, QListWidgetItem, QMainWindow,
     QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QVBoxLayout, QWidget)
+    QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_ChatWidget(object):
     def setupUi(self, ChatWidget):
@@ -94,68 +94,20 @@ class Ui_ChatWidget(object):
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setSizeConstraint(QLayout.SetMinimumSize)
-        self.label_5 = QLabel(self.widget_2)
-        self.label_5.setObjectName(u"label_5")
+        self.label_6 = QLabel(self.widget_2)
+        self.label_6.setObjectName(u"label_6")
 
-        self.gridLayout.addWidget(self.label_5, 4, 0, 1, 1)
-
-        self.language = QComboBox(self.widget_2)
-        self.language.setObjectName(u"language")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.language.sizePolicy().hasHeightForWidth())
-        self.language.setSizePolicy(sizePolicy2)
-
-        self.gridLayout.addWidget(self.language, 2, 1, 1, 1)
-
-        self.msg_count = QLabel(self.widget_2)
-        self.msg_count.setObjectName(u"msg_count")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.msg_count.sizePolicy().hasHeightForWidth())
-        self.msg_count.setSizePolicy(sizePolicy3)
-
-        self.gridLayout.addWidget(self.msg_count, 4, 1, 1, 1)
-
-        self.label = QLabel(self.widget_2)
-        self.label.setObjectName(u"label")
-
-        self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
-
-        self.n_tokens = QLabel(self.widget_2)
-        self.n_tokens.setObjectName(u"n_tokens")
-        sizePolicy3.setHeightForWidth(self.n_tokens.sizePolicy().hasHeightForWidth())
-        self.n_tokens.setSizePolicy(sizePolicy3)
-
-        self.gridLayout.addWidget(self.n_tokens, 3, 1, 1, 1)
-
-        self.label_3 = QLabel(self.widget_2)
-        self.label_3.setObjectName(u"label_3")
-        sizePolicy3.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
-        self.label_3.setSizePolicy(sizePolicy3)
-
-        self.gridLayout.addWidget(self.label_3, 3, 0, 1, 1)
-
-        self.label_4 = QLabel(self.widget_2)
-        self.label_4.setObjectName(u"label_4")
-        sizePolicy1.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
-        self.label_4.setSizePolicy(sizePolicy1)
-
-        self.gridLayout.addWidget(self.label_4, 5, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_6, 6, 0, 1, 1)
 
         self.name = QLineEdit(self.widget_2)
         self.name.setObjectName(u"name")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.name.sizePolicy().hasHeightForWidth())
         self.name.setSizePolicy(sizePolicy2)
 
         self.gridLayout.addWidget(self.name, 1, 1, 1, 1)
-
-        self.label_2 = QLabel(self.widget_2)
-        self.label_2.setObjectName(u"label_2")
-
-        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
 
         self.widget_3 = QWidget(self.widget_2)
         self.widget_3.setObjectName(u"widget_3")
@@ -166,21 +118,15 @@ class Ui_ChatWidget(object):
         self.verticalLayout_3.setSizeConstraint(QLayout.SetMinimumSize)
         self.tagList = QListWidget(self.widget_3)
         self.tagList.setObjectName(u"tagList")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.tagList.sizePolicy().hasHeightForWidth())
-        self.tagList.setSizePolicy(sizePolicy4)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.tagList.sizePolicy().hasHeightForWidth())
+        self.tagList.setSizePolicy(sizePolicy3)
 
         self.verticalLayout_3.addWidget(self.tagList)
 
-
-        self.gridLayout.addWidget(self.widget_3, 5, 1, 1, 1)
-
-
-        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
-
-        self.widget_4 = QWidget(self.widget_2)
+        self.widget_4 = QWidget(self.widget_3)
         self.widget_4.setObjectName(u"widget_4")
         sizePolicy1.setHeightForWidth(self.widget_4.sizePolicy().hasHeightForWidth())
         self.widget_4.setSizePolicy(sizePolicy1)
@@ -202,7 +148,90 @@ class Ui_ChatWidget(object):
         self.horizontalLayout_4.addWidget(self.tagComboBox)
 
 
-        self.gridLayout_2.addWidget(self.widget_4, 1, 0, 1, 1)
+        self.verticalLayout_3.addWidget(self.widget_4)
+
+
+        self.gridLayout.addWidget(self.widget_3, 5, 1, 1, 1)
+
+        self.n_tokens = QLabel(self.widget_2)
+        self.n_tokens.setObjectName(u"n_tokens")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.n_tokens.sizePolicy().hasHeightForWidth())
+        self.n_tokens.setSizePolicy(sizePolicy4)
+
+        self.gridLayout.addWidget(self.n_tokens, 3, 1, 1, 1)
+
+        self.label_4 = QLabel(self.widget_2)
+        self.label_4.setObjectName(u"label_4")
+        sizePolicy1.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy1)
+
+        self.gridLayout.addWidget(self.label_4, 5, 0, 1, 1)
+
+        self.language = QComboBox(self.widget_2)
+        self.language.setObjectName(u"language")
+        sizePolicy2.setHeightForWidth(self.language.sizePolicy().hasHeightForWidth())
+        self.language.setSizePolicy(sizePolicy2)
+
+        self.gridLayout.addWidget(self.language, 2, 1, 1, 1)
+
+        self.label = QLabel(self.widget_2)
+        self.label.setObjectName(u"label")
+
+        self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
+
+        self.label_3 = QLabel(self.widget_2)
+        self.label_3.setObjectName(u"label_3")
+        sizePolicy4.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
+        self.label_3.setSizePolicy(sizePolicy4)
+
+        self.gridLayout.addWidget(self.label_3, 3, 0, 1, 1)
+
+        self.msg_count = QLabel(self.widget_2)
+        self.msg_count.setObjectName(u"msg_count")
+        sizePolicy4.setHeightForWidth(self.msg_count.sizePolicy().hasHeightForWidth())
+        self.msg_count.setSizePolicy(sizePolicy4)
+
+        self.gridLayout.addWidget(self.msg_count, 4, 1, 1, 1)
+
+        self.label_2 = QLabel(self.widget_2)
+        self.label_2.setObjectName(u"label_2")
+
+        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
+
+        self.textEdit = QTextEdit(self.widget_2)
+        self.textEdit.setObjectName(u"textEdit")
+        sizePolicy3.setHeightForWidth(self.textEdit.sizePolicy().hasHeightForWidth())
+        self.textEdit.setSizePolicy(sizePolicy3)
+
+        self.gridLayout.addWidget(self.textEdit, 6, 1, 1, 1)
+
+        self.label_5 = QLabel(self.widget_2)
+        self.label_5.setObjectName(u"label_5")
+
+        self.gridLayout.addWidget(self.label_5, 4, 0, 1, 1)
+
+        self.widget_5 = QWidget(self.widget_2)
+        self.widget_5.setObjectName(u"widget_5")
+        self.horizontalLayout_5 = QHBoxLayout(self.widget_5)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.pushButton_2 = QPushButton(self.widget_5)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+
+        self.horizontalLayout_5.addWidget(self.pushButton_2)
+
+        self.pushButton = QPushButton(self.widget_5)
+        self.pushButton.setObjectName(u"pushButton")
+
+        self.horizontalLayout_5.addWidget(self.pushButton)
+
+
+        self.gridLayout.addWidget(self.widget_5, 7, 1, 1, 1)
+
+
+        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
 
 
         self.horizontalLayout_3.addWidget(self.widget_2)
@@ -226,14 +255,17 @@ class Ui_ChatWidget(object):
         self.add_msg_btn.setText(QCoreApplication.translate("ChatWidget", u"Add message", None))
         self.delete_msg_btn.setText(QCoreApplication.translate("ChatWidget", u"Delete message", None))
         self.generate_btn.setText(QCoreApplication.translate("ChatWidget", u"Generate selected", None))
-        self.label_5.setText(QCoreApplication.translate("ChatWidget", u"Msg count", None))
-        self.msg_count.setText(QCoreApplication.translate("ChatWidget", u"null", None))
-        self.label.setText(QCoreApplication.translate("ChatWidget", u"Name", None))
-        self.n_tokens.setText(QCoreApplication.translate("ChatWidget", u"null", None))
-        self.label_3.setText(QCoreApplication.translate("ChatWidget", u"Tokens:", None))
-        self.label_4.setText(QCoreApplication.translate("ChatWidget", u"Tags", None))
-        self.label_2.setText(QCoreApplication.translate("ChatWidget", u"Language", None))
+        self.label_6.setText(QCoreApplication.translate("ChatWidget", u"Functions", None))
         self.addTagBtn.setText(QCoreApplication.translate("ChatWidget", u"Add", None))
         self.deleteTagBtn.setText(QCoreApplication.translate("ChatWidget", u"Delete", None))
+        self.n_tokens.setText(QCoreApplication.translate("ChatWidget", u"null", None))
+        self.label_4.setText(QCoreApplication.translate("ChatWidget", u"Tags", None))
+        self.label.setText(QCoreApplication.translate("ChatWidget", u"Name", None))
+        self.label_3.setText(QCoreApplication.translate("ChatWidget", u"Tokens:", None))
+        self.msg_count.setText(QCoreApplication.translate("ChatWidget", u"null", None))
+        self.label_2.setText(QCoreApplication.translate("ChatWidget", u"Language", None))
+        self.label_5.setText(QCoreApplication.translate("ChatWidget", u"Msg count", None))
+        self.pushButton_2.setText(QCoreApplication.translate("ChatWidget", u"Add", None))
+        self.pushButton.setText(QCoreApplication.translate("ChatWidget", u"Delete", None))
     # retranslateUi
 
