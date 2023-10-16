@@ -29,6 +29,9 @@ class ChatWindow(QMainWindow):
         self.ui.language.currentIndexChanged.connect(self.on_language_changed)
         self.ui.addTagBtn.clicked.connect(self.on_tag_added)
         self.ui.deleteTagBtn.clicked.connect(self.on_tag_deleted)
+        self.ui.deleteFnBtn.clicked.connect(self.on_delete_fn_clicked)
+        self.ui.fnListWidget.doubleClicked.connect(self.on_fn_double_clicked)
+        
         
         self.ui.listWidget.verticalScrollBar().setSingleStep(10)
         self.ui.listWidget.itemSelectionChanged.connect(self.on_item_selection_changed)
@@ -78,6 +81,9 @@ class ChatWindow(QMainWindow):
         self.ui.listWidget.setItemWidget(item, chat_item)
         
         self.ui.listWidget.scrollToBottom()
+        
+    def add_function(self, fn_name):
+        self.ui.fnListWidget.addItem(fn_name)
 
     def set_close_callback(self, callback):
         self.close_callback = callback
@@ -109,6 +115,15 @@ class ChatWindow(QMainWindow):
     
     def set_generate_callback(self, callback):
         self.generate_callback = callback
+        
+    def set_add_function_callback(self, callback):
+        self.ui.addFnBtn.clicked.connect(callback)
+        
+    def set_delete_function_callback(self, callback):
+        self.delete_function_callback = callback
+    
+    def set_function_double_clicked_callback(self, callback):
+        self.function_double_clicked_callback = callback
         
     def on_delete_msg_clicked(self):
         row_id = self.ui.listWidget.currentRow()
@@ -174,3 +189,16 @@ class ChatWindow(QMainWindow):
         chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
         if self.generate_callback is not None:
             self.generate_callback(row_id, chat_item)
+
+    def on_delete_fn_clicked(self):
+        ind = self.ui.fnListWidget.currentRow()
+        self.ui.fnListWidget.takeItem(ind)
+        
+        if self.delete_function_callback:
+            self.delete_function_callback(ind)
+
+    def on_fn_double_clicked(self, item):
+        ind = item.row()
+        
+        if self.function_double_clicked_callback:
+            self.function_double_clicked_callback(ind)

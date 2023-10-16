@@ -1,0 +1,41 @@
+from PySide6.QtWidgets import QWidget, QListWidgetItem
+from PySide6.QtCore import Qt
+from .ui_function_description import Ui_FunctionDescription
+
+
+
+class FunctionDescriptionWindow(QWidget):
+    def __init__(self, parent=None):
+        super(FunctionDescriptionWindow, self).__init__(parent)
+        self.ui = Ui_FunctionDescription()
+        self.ui.setupUi(self)
+        
+        self.ui.fnNameTextEdit.textChanged.connect(self.on_name_changed)
+        self.ui.fnDescriptionTextEdit.textChanged.connect(self.on_description_changed)
+        
+        self.name_changed_callback = None
+        self.description_changed_callback = None
+        
+    def set_name(self, name):
+        self.ui.fnNameTextEdit.setText(name)
+        
+    def set_description(self, description):
+        self.ui.fnDescriptionTextEdit.setText(description)
+    
+    def set_save_function_callback(self, callback):
+        self.ui.fnSaveBtn.clicked.connect(callback)
+        
+    def set_name_changed_callback(self, callback):
+        self.name_changed_callback = callback
+    
+    def set_description_changed_callback(self, callback):
+        self.description_changed_callback = callback
+        
+    def on_name_changed(self):
+        if self.name_changed_callback:
+            self.name_changed_callback(self.ui.fnNameTextEdit.text())
+
+    def on_description_changed(self):
+        if self.description_changed_callback:
+            self.description_changed_callback(self.ui.fnDescriptionTextEdit.toPlainText())
+    

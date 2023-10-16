@@ -1,12 +1,15 @@
 from PySide6.QtCore import QThread, Qt, Signal
 from PySide6.QtCore import QTimer
 import time
+from functools import partial
 
 from lima_gui.view.chat_window import ChatWindow
 from lima_gui.view.chat_item import ChatItem
-from lima_gui.model.chat import Chat
+from lima_gui.view.function_desc_window import FunctionDescriptionWindow
+from lima_gui.model.chat import Chat, Function
 from lima_gui.state.settings import Settings
 from lima_gui.state.openai import OpenAIService
+from lima_gui.controller.function_desc_controller import FunctionDescController
 
 
 class ChatItemUpdater(QThread):
@@ -59,6 +62,10 @@ class ChatController:
         for msg in chat.chat['dialog']:
             role, content = msg['role'], msg['content']
             self.chat_window.add_msg(role, content)
+        
+        for fn in chat.functions:
+            self.chat_window.add_function(fn.name)
+            
         self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
         self.chat_window.set_tag_options(self.settings.tags)
         self.chat_window.set_tags(chat.tags)
@@ -74,6 +81,9 @@ class ChatController:
         self.chat_window.set_tag_added_callback(self.on_tag_added)
         self.chat_window.set_tag_deleted_callback(self.on_tag_deleted)
         self.chat_window.set_generate_callback(self.on_generate_clicked)
+        self.chat_window.set_add_function_callback(self.on_function_add_clicked)
+        self.chat_window.set_delete_function_callback(self.on_function_delete_clicked)
+        self.chat_window.set_function_double_clicked_callback(self.on_function_double_clicked)
         
         # Make sure the list is scrolled to the bottom.
         # There is a problem that the chat items are not rendered at the time of adding
@@ -134,4 +144,47 @@ class ChatController:
             assistant_role='assistant'
         )
         self.chat_item_updater.start()
+        
+    def on_function_add_clicked(self):
+        function = Function.create_empty('New function')
+        fn_window = FunctionDescriptionWindow()
+        fn_controller = FunctionDescController(fn_window, function)
+        fn_controller.save_function_callback = self.on_function_created
+        
+        self.fn_window = fn_window
+        self.fn_controller = fn_controller
+        fn_window.show()
+    
+    def on_function_created(self, function: Function):
+        print('function created')
+        print(function)
+        self.chat.add_fn(function)
+        self.chat_window.add_function(function.name)
+        self.fn_window.close()
+        self.fn_controller = None
+        self.fn_window = None
+    
+    def on_function_delete_clicked(self, ind):
+        self.chat.remove_fn(ind)
+        
+    def on_function_double_clicked(self, ind):
+        function = self.chat.get_fn(ind)
+        print('fn double clicked, name', function.name)
+        
+        fn_window = FunctionDescriptionWindow()
+        fn_controller = FunctionDescController(fn_window, function)
+        fn_controller.save_function_callback = partial(self.on_function_updated, ind)
+        
+        self.fn_window = fn_window
+        self.fn_controller = fn_controller
+        fn_window.show()
 
+    def on_function_updated(self, ind, function):
+        print('fn updated, name', function.name)
+        print(function)
+        self.chat.edit_fn(ind, function)
+        self.fn_window.close()
+        self.fn_controller = None
+        self.fn_window = None
+
+    

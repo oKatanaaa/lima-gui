@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'chat_widgetqZjmcd.ui'
+## Form generated from reading UI file 'chat_widgetzBRDRm.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QGrid
     QHBoxLayout, QLabel, QLayout, QLineEdit,
     QListView, QListWidget, QListWidgetItem, QMainWindow,
     QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QTextEdit, QVBoxLayout, QWidget)
+    QVBoxLayout, QWidget)
 
 class Ui_ChatWidget(object):
     def setupUi(self, ChatWidget):
@@ -201,13 +201,6 @@ class Ui_ChatWidget(object):
 
         self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
 
-        self.textEdit = QTextEdit(self.widget_2)
-        self.textEdit.setObjectName(u"textEdit")
-        sizePolicy3.setHeightForWidth(self.textEdit.sizePolicy().hasHeightForWidth())
-        self.textEdit.setSizePolicy(sizePolicy3)
-
-        self.gridLayout.addWidget(self.textEdit, 6, 1, 1, 1)
-
         self.label_5 = QLabel(self.widget_2)
         self.label_5.setObjectName(u"label_5")
 
@@ -217,18 +210,25 @@ class Ui_ChatWidget(object):
         self.widget_5.setObjectName(u"widget_5")
         self.horizontalLayout_5 = QHBoxLayout(self.widget_5)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.pushButton_2 = QPushButton(self.widget_5)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.addFnBtn = QPushButton(self.widget_5)
+        self.addFnBtn.setObjectName(u"addFnBtn")
 
-        self.horizontalLayout_5.addWidget(self.pushButton_2)
+        self.horizontalLayout_5.addWidget(self.addFnBtn)
 
-        self.pushButton = QPushButton(self.widget_5)
-        self.pushButton.setObjectName(u"pushButton")
+        self.deleteFnBtn = QPushButton(self.widget_5)
+        self.deleteFnBtn.setObjectName(u"deleteFnBtn")
 
-        self.horizontalLayout_5.addWidget(self.pushButton)
+        self.horizontalLayout_5.addWidget(self.deleteFnBtn)
 
 
         self.gridLayout.addWidget(self.widget_5, 7, 1, 1, 1)
+
+        self.fnListWidget = QListWidget(self.widget_2)
+        self.fnListWidget.setObjectName(u"fnListWidget")
+        sizePolicy3.setHeightForWidth(self.fnListWidget.sizePolicy().hasHeightForWidth())
+        self.fnListWidget.setSizePolicy(sizePolicy3)
+
+        self.gridLayout.addWidget(self.fnListWidget, 6, 1, 1, 1)
 
 
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
@@ -265,7 +265,7 @@ class Ui_ChatWidget(object):
         self.msg_count.setText(QCoreApplication.translate("ChatWidget", u"null", None))
         self.label_2.setText(QCoreApplication.translate("ChatWidget", u"Language", None))
         self.label_5.setText(QCoreApplication.translate("ChatWidget", u"Msg count", None))
-        self.pushButton_2.setText(QCoreApplication.translate("ChatWidget", u"Add", None))
-        self.pushButton.setText(QCoreApplication.translate("ChatWidget", u"Delete", None))
+        self.addFnBtn.setText(QCoreApplication.translate("ChatWidget", u"Add", None))
+        self.deleteFnBtn.setText(QCoreApplication.translate("ChatWidget", u"Delete", None))
     # retranslateUi
 

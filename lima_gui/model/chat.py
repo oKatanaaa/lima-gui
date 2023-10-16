@@ -1,3 +1,7 @@
+from copy import deepcopy
+
+from .function import Function
+
 
 class Chat:
     DEFAULT_NAME = 'CHAT'
@@ -16,7 +20,8 @@ class Chat:
             "name": "New Chat",
             "lang": "en",
             "dialog": [],
-            "tags": []
+            "tags": [],
+            "functions": []
         })
         
     def __init__(self, chat: dict):
@@ -62,6 +67,13 @@ class Chat:
     @property
     def tags(self):
         return self.chat["tags"]
+    
+    @property
+    def functions(self):
+        out = []
+        for fn_dict in self.chat["functions"]:
+            out.append(Function(deepcopy(fn_dict)))
+        return out
         
     def __len__(self):
         return len(self.chat["dialog"])
@@ -74,7 +86,19 @@ class Chat:
     
     def remove_msg(self, ind):
         self.chat["dialog"].pop(ind)
+        
+    def add_fn(self, fn_obj: Function):
+        self.chat["functions"].append(fn_obj.fn_dict)
     
+    def edit_fn(self, ind, fn_obj: Function):
+        self.chat["functions"][ind] = fn_obj.fn_dict
+    
+    def remove_fn(self, ind):
+        self.chat["functions"].pop(ind)
+        
+    def get_fn(self, ind):
+        return Function(deepcopy(self.chat["functions"][ind]))
+        
     def add_tag(self, tag):
         if tag not in self.chat["tags"]:
             self.chat["tags"].append(tag)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'function_descriptionrgqbWq.ui'
+## Form generated from reading UI file 'function_descriptionPXRVkl.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -20,17 +20,17 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QGridLayout, QHB
     QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
     QTextEdit, QVBoxLayout, QWidget)
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        if not Form.objectName():
-            Form.setObjectName(u"Form")
-        Form.resize(812, 402)
-        self.horizontalLayout_3 = QHBoxLayout(Form)
+class Ui_FunctionDescription(object):
+    def setupUi(self, FunctionDescription):
+        if not FunctionDescription.objectName():
+            FunctionDescription.setObjectName(u"FunctionDescription")
+        FunctionDescription.resize(812, 402)
+        self.horizontalLayout_3 = QHBoxLayout(FunctionDescription)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setSizeConstraint(QLayout.SetNoConstraint)
-        self.parametersListWidget = QListWidget(Form)
+        self.parametersListWidget = QListWidget(FunctionDescription)
         self.parametersListWidget.setObjectName(u"parametersListWidget")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -45,7 +45,7 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.parametersListWidget)
 
-        self.widget = QWidget(Form)
+        self.widget = QWidget(FunctionDescription)
         self.widget.setObjectName(u"widget")
         self.horizontalLayout_2 = QHBoxLayout(self.widget)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -70,7 +70,7 @@ class Ui_Form(object):
 
         self.horizontalLayout_3.addLayout(self.verticalLayout)
 
-        self.widget_2 = QWidget(Form)
+        self.widget_2 = QWidget(FunctionDescription)
         self.widget_2.setObjectName(u"widget_2")
         self.widget_2.setEnabled(True)
         sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
@@ -95,43 +95,49 @@ class Ui_Form(object):
 
         self.gridLayout.addWidget(self.fnName, 1, 0, 1, 1)
 
-        self.fnNameTextEdit = QLineEdit(self.widget_2)
-        self.fnNameTextEdit.setObjectName(u"fnNameTextEdit")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.fnNameTextEdit.sizePolicy().hasHeightForWidth())
-        self.fnNameTextEdit.setSizePolicy(sizePolicy2)
-
-        self.gridLayout.addWidget(self.fnNameTextEdit, 1, 1, 1, 1)
-
         self.fnDescriptionTextEdit = QTextEdit(self.widget_2)
         self.fnDescriptionTextEdit.setObjectName(u"fnDescriptionTextEdit")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.fnDescriptionTextEdit.sizePolicy().hasHeightForWidth())
-        self.fnDescriptionTextEdit.setSizePolicy(sizePolicy3)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.fnDescriptionTextEdit.sizePolicy().hasHeightForWidth())
+        self.fnDescriptionTextEdit.setSizePolicy(sizePolicy2)
 
         self.gridLayout.addWidget(self.fnDescriptionTextEdit, 2, 1, 1, 1)
 
+        self.fnNameTextEdit = QLineEdit(self.widget_2)
+        self.fnNameTextEdit.setObjectName(u"fnNameTextEdit")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.fnNameTextEdit.sizePolicy().hasHeightForWidth())
+        self.fnNameTextEdit.setSizePolicy(sizePolicy3)
+
+        self.gridLayout.addWidget(self.fnNameTextEdit, 1, 1, 1, 1)
+
 
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
+
+        self.fnSaveBtn = QPushButton(self.widget_2)
+        self.fnSaveBtn.setObjectName(u"fnSaveBtn")
+
+        self.gridLayout_2.addWidget(self.fnSaveBtn, 1, 0, 1, 1)
 
 
         self.horizontalLayout_3.addWidget(self.widget_2)
 
 
-        self.retranslateUi(Form)
+        self.retranslateUi(FunctionDescription)
 
-        QMetaObject.connectSlotsByName(Form)
+        QMetaObject.connectSlotsByName(FunctionDescription)
     # setupUi
 
-    def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.addParamBtn.setText(QCoreApplication.translate("Form", u"Add parameter", None))
-        self.deleteParamBtn.setText(QCoreApplication.translate("Form", u"Delete parameter", None))
-        self.fnDescription.setText(QCoreApplication.translate("Form", u"Description", None))
-        self.fnName.setText(QCoreApplication.translate("Form", u"Name", None))
+    def retranslateUi(self, FunctionDescription):
+        FunctionDescription.setWindowTitle(QCoreApplication.translate("FunctionDescription", u"Form", None))
+        self.addParamBtn.setText(QCoreApplication.translate("FunctionDescription", u"Add parameter", None))
+        self.deleteParamBtn.setText(QCoreApplication.translate("FunctionDescription", u"Delete parameter", None))
+        self.fnDescription.setText(QCoreApplication.translate("FunctionDescription", u"Description", None))
+        self.fnName.setText(QCoreApplication.translate("FunctionDescription", u"Name", None))
+        self.fnSaveBtn.setText(QCoreApplication.translate("FunctionDescription", u"Save function", None))
     # retranslateUi
 
