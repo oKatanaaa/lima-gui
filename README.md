@@ -95,8 +95,9 @@ On the horizon: I'm looking to integrate Huggingface with LIMA-GUI. Specifically
 
 ## Usage
 
-1. First install the lima-gui by running `pip install -e .` in the repo folder.
-2. Run `python -m lima_gui.app`
+1. Download the latest release (main branch is likely to less stable).
+2. Install the lima-gui by running `pip install -e .` in the repo folder.
+3. Run `python -m lima_gui.app`
 
 If you experience any problem, please make a corresponding issue.
 
