@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'function_descriptionPXRVkl.ui'
+## Form generated from reading UI file 'function_descriptionuEInyj.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -24,7 +24,7 @@ class Ui_FunctionDescription(object):
     def setupUi(self, FunctionDescription):
         if not FunctionDescription.objectName():
             FunctionDescription.setObjectName(u"FunctionDescription")
-        FunctionDescription.resize(812, 402)
+        FunctionDescription.resize(992, 458)
         self.horizontalLayout_3 = QHBoxLayout(FunctionDescription)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.verticalLayout = QVBoxLayout()
@@ -97,7 +97,7 @@ class Ui_FunctionDescription(object):
 
         self.fnDescriptionTextEdit = QTextEdit(self.widget_2)
         self.fnDescriptionTextEdit.setObjectName(u"fnDescriptionTextEdit")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.fnDescriptionTextEdit.sizePolicy().hasHeightForWidth())

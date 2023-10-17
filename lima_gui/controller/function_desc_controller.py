@@ -16,6 +16,10 @@ class FunctionDescController:
         self.function_desc_window.set_description_changed_callback(self.on_description_changed)
         self.function_desc_window.set_save_function_callback(self.on_save_function_clicked)
         #self.function_desc_window.set_close_callback(self.on_save_function_clicked)
+        self.function_desc_window.set_add_param_clicked_callback(self.on_add_param_clicked)
+        self.function_desc_window.set_delete_param_clicked_callback(self.on_delete_param_clicked)
+        self.function_desc_window.set_param_updated_callback(self.on_param_updated)
+        
         self.save_function_callback = None
     
     def on_name_changed(self, name):
@@ -27,3 +31,14 @@ class FunctionDescController:
     def on_save_function_clicked(self):
         if self.save_function_callback:
             self.save_function_callback(self.function)
+            
+    def on_param_updated(self, ind, data):
+        print('param updated', ind, data)
+        pass
+            
+    def on_add_param_clicked(self):
+        print('add param clicked')
+        self.function_desc_window.add_param(Function.create_empty_param())
+    
+    def on_delete_param_clicked(self):
+        pass

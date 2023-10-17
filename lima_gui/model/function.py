@@ -6,6 +6,15 @@ class Function:
     """
     See https://platform.openai.com/docs/guides/gpt/function-calling for more details.
     """
+    
+    # Parameter fields
+    PARAM_NAME = "name"
+    PARAM_DESCRIPTION = "description"
+    PARAM_TYPE = "type"
+    PARAM_REQUIRED = "required"
+    PARAM_ENUM = "enum"
+    
+    
     @staticmethod
     def create_empty(name):
         """
@@ -24,6 +33,16 @@ class Function:
             "description": "Describe your function here",
             "params": []
         })
+        
+    @staticmethod
+    def create_empty_param():
+        return {
+            'name': '',
+            'description': '',
+            'type': 'string',
+            'required': False,
+            'enum': []
+        }
         
     def __init__(self, fn_dict):
         self.fn_dict = fn_dict
