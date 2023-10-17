@@ -12,10 +12,12 @@ class FunctionDescriptionWindow(QWidget):
         
         self.ui.fnNameTextEdit.textChanged.connect(self.on_name_changed)
         self.ui.fnDescriptionTextEdit.textChanged.connect(self.on_description_changed)
-        
+        self.ui.deleteParamBtn.clicked.connect(self.on_delete_param_clicked)
+
         self.name_changed_callback = None
         self.description_changed_callback = None
         self.param_updated_callback = None
+        self.save_function_callback = None
         
     def set_name(self, name):
         self.ui.fnNameTextEdit.setText(name)
@@ -39,6 +41,7 @@ class FunctionDescriptionWindow(QWidget):
     
     def set_save_function_callback(self, callback):
         self.ui.fnSaveBtn.clicked.connect(callback)
+        self.save_function_callback = callback
         
     def set_name_changed_callback(self, callback):
         self.name_changed_callback = callback
@@ -50,7 +53,7 @@ class FunctionDescriptionWindow(QWidget):
         self.ui.addParamBtn.clicked.connect(callback)
     
     def set_delete_param_clicked_callback(self, callback):
-        self.ui.deleteParamBtn.clicked.connect(callback)
+        self.delete_param_clicked_callback = callback
         
     def set_param_updated_callback(self, callback):
         self.param_updated_callback = callback
@@ -73,3 +76,14 @@ class FunctionDescriptionWindow(QWidget):
         row_item.setSizeHint(param_item.sizeHint())
         
         self.param_updated_callback(row_id, param_data)
+
+    def on_delete_param_clicked(self):
+        row_id = self.ui.parametersListWidget.currentRow()
+        
+        if self.delete_param_clicked_callback:
+            self.delete_param_clicked_callback(row_id)
+            
+    def closeEvent(self, event):
+        event.accept()
+        if self.save_function_callback:
+            self.save_function_callback()

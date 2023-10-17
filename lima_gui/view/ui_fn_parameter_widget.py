@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'fn_parameter_widgetvYmGnI.ui'
+## Form generated from reading UI file 'fn_parameter_widgetdJztVB.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -43,6 +43,7 @@ class Ui_fnParameter(object):
         sizePolicy.setHeightForWidth(self.paramDescLineEdit.sizePolicy().hasHeightForWidth())
         self.paramDescLineEdit.setSizePolicy(sizePolicy)
         self.paramDescLineEdit.setMaximumSize(QSize(1200, 50))
+        self.paramDescLineEdit.setAcceptRichText(False)
 
         self.gridLayout.addWidget(self.paramDescLineEdit, 2, 1, 1, 1)
 
@@ -119,6 +120,7 @@ class Ui_fnParameter(object):
     def retranslateUi(self, fnParameter):
         fnParameter.setWindowTitle(QCoreApplication.translate("fnParameter", u"Form", None))
         self.paramRequiredCheckBox.setText(QCoreApplication.translate("fnParameter", u"Required", None))
+        self.paramDescLineEdit.setPlaceholderText(QCoreApplication.translate("fnParameter", u"Describe the parameter here", None))
         self.label_4.setText(QCoreApplication.translate("fnParameter", u"Enum", None))
         self.label_2.setText(QCoreApplication.translate("fnParameter", u"Type", None))
         self.label.setText(QCoreApplication.translate("fnParameter", u"Name", None))

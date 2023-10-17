@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'function_descriptionuEInyj.ui'
+## Form generated from reading UI file 'function_descriptionIcOijS.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -138,6 +138,7 @@ class Ui_FunctionDescription(object):
         self.deleteParamBtn.setText(QCoreApplication.translate("FunctionDescription", u"Delete parameter", None))
         self.fnDescription.setText(QCoreApplication.translate("FunctionDescription", u"Description", None))
         self.fnName.setText(QCoreApplication.translate("FunctionDescription", u"Name", None))
+        self.fnDescriptionTextEdit.setPlaceholderText(QCoreApplication.translate("FunctionDescription", u"Describe your function here", None))
         self.fnSaveBtn.setText(QCoreApplication.translate("FunctionDescription", u"Save function", None))
     # retranslateUi
 

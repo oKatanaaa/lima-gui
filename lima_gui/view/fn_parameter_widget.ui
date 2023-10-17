@@ -44,6 +44,12 @@
        <height>50</height>
       </size>
      </property>
+     <property name="acceptRichText">
+      <bool>false</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Describe the parameter here</string>
+     </property>
     </widget>
    </item>
    <item row="1" column="1">

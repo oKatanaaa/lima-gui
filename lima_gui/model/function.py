@@ -30,19 +30,28 @@ class Function:
         """
         return Function({
             "name": name,
-            "description": "Describe your function here",
+            "description": "",
             "params": []
         })
         
     @staticmethod
     def create_empty_param():
         return {
-            'name': '',
-            'description': '',
-            'type': 'string',
-            'required': False,
-            'enum': []
+            Function.PARAM_NAME: '',
+            Function.PARAM_DESCRIPTION: '',
+            Function.PARAM_TYPE: 'string',
+            Function.PARAM_REQUIRED: False,
+            Function.PARAM_ENUM: []
         }
+
+    @staticmethod
+    def assert_param(param_dict: Dict[str, str]):
+        assert Function.PARAM_NAME in param_dict
+        assert Function.PARAM_DESCRIPTION in param_dict
+        assert Function.PARAM_TYPE in param_dict
+        assert Function.PARAM_REQUIRED in param_dict
+        assert Function.PARAM_ENUM in param_dict
+        assert isinstance(param_dict[Function.PARAM_REQUIRED], bool)
         
     def __init__(self, fn_dict):
         self.fn_dict = fn_dict
@@ -68,9 +77,11 @@ class Function:
         return deepcopy(self.fn_dict["params"])
     
     def add_param(self, param_dict: Dict[str, str]):
+        Function.assert_param(param_dict)
         self.fn_dict["params"].append(param_dict)
     
     def edit_param(self, ind: int, param_dict: Dict[str, str]):
+        Function.assert_param(param_dict)
         self.fn_dict["params"][ind] = param_dict
         
     def remove_param(self, ind: int):

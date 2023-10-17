@@ -11,6 +11,8 @@ class FunctionDescController:
         
         self.function_desc_window.set_name(function.name)
         self.function_desc_window.set_description(function.description)
+        for param in self.function.params:
+            self.function_desc_window.add_param(param)
         
         self.function_desc_window.set_name_changed_callback(self.on_name_changed)
         self.function_desc_window.set_description_changed_callback(self.on_description_changed)
@@ -34,11 +36,12 @@ class FunctionDescController:
             
     def on_param_updated(self, ind, data):
         print('param updated', ind, data)
-        pass
+        self.function.edit_param(ind, data)
             
     def on_add_param_clicked(self):
         print('add param clicked')
         self.function_desc_window.add_param(Function.create_empty_param())
+        self.function.add_param(Function.create_empty_param())
     
-    def on_delete_param_clicked(self):
-        pass
+    def on_delete_param_clicked(self, ind):
+        self.function.remove_param(ind)

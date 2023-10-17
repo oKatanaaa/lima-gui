@@ -133,6 +133,7 @@ If you experience any problem, please make a corresponding issue.
 - [ ] Save settings/current config.
 - [ ] Import ChatGPT exported dialogues.
 - [ ] Stats board that shows various useful statistics about current data (token count distribution, number of samples by tags/languages).
+- [ ] Remove stupid prints and add proper logging.
 
 ## Pull requests
 
