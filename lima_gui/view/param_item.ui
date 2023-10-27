@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ChatItem</class>
- <widget class="QWidget" name="ChatItem">
+ <class>ParamItem</class>
+ <widget class="QWidget" name="ParamItem">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -61,22 +61,26 @@
            <enum>QLayout::SetMinimumSize</enum>
           </property>
           <item>
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="paramNameLabel">
             <property name="text">
-             <string>Role</string>
+             <string>Parameter name</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+           <widget class="QLabel" name="paramTypeLabel">
+            <property name="text">
+             <string>Parameter type</string>
             </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="requiredCheckBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Required</string>
             </property>
            </widget>
           </item>
@@ -86,45 +90,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QWidget" name="widget_2" native="true">
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="spacing">
-         <number>2</number>
-        </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
-         <number>2</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Function name</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="fnNameComboBox"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="fnCallParamsPushButton">
-          <property name="text">
-           <string>Fn call parameters</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTextEdit" name="textEdit">
+      <widget class="QTextEdit" name="valueTextEdit">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>

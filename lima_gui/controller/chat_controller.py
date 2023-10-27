@@ -58,7 +58,7 @@ class ChatController:
         self.chat_window.set_name(chat.name)
         self.chat_window.set_language_options(self.settings.languages)
         self.chat_window.set_language(chat.language)
-        self.chat_window.set_role_options(['system', 'user', 'assistant'], 'assistant')
+        self.chat_window.set_role_options(['system', 'user', 'assistant', 'function'], 'assistant')
         for msg in chat.chat['dialog']:
             role, content = msg['role'], msg['content']
             self.chat_window.add_msg(role, content)

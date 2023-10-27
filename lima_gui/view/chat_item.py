@@ -24,6 +24,7 @@ class ChatItem(QWidget):
             'system': '#f4ebff',
             'user': '#ebf2ff',
             'assistant': '#ebfff6',
+            'function': '#ffe9eb'
         }
         # Add an attribute to keep track of auto-indentation
         self.auto_indent_next_line = True
@@ -96,6 +97,7 @@ class ChatItem(QWidget):
         print('content changed')
         self.update_height()
         self.update_background_color_by_role()
+        self.update_fn_ui_elements()
         if self.content_changed_callback:
             self.content_changed_callback(self.parent_item)
 
@@ -112,3 +114,20 @@ class ChatItem(QWidget):
     def update_background_color_by_role(self):
         role = self.ui.comboBox.currentText()
         self.ui.widget.setStyleSheet(f'background-color: {self.role2color[role]};')
+        
+    def update_fn_ui_elements(self):
+        def config_ui(enable_combo, enable_fn_btn):
+            self.ui.fnNameComboBox.setEnabled(enable_combo)
+            self.ui.fnCallParamsPushButton.setEnabled(enable_fn_btn)
+        role = self.ui.comboBox.currentText()
+        
+        if role == 'function':
+            config_ui(True, False)
+        elif role == 'system':
+            config_ui(False, False)
+        elif role == 'assistant':
+            config_ui(True, True)
+        elif role == 'user':
+            config_ui(False, False)
+        else:
+            print(f"Unknown role {role} is set. It may cause errors when using OpenAI API.")
