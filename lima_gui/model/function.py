@@ -85,6 +85,8 @@ class Function:
         self.fn_dict["params"][ind] = param_dict
         
     def remove_param(self, ind: int):
+        print(self.fn_dict["params"])
+        print(ind)
         self.fn_dict["params"].pop(ind)
     
     def to_openai_dict(self):

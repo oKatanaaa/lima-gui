@@ -1,7 +1,12 @@
 from PySide6.QtGui import QKeyEvent, QTextCursor
-from PySide6.QtWidgets import QTextEdit, QWidget
+from PySide6.QtWidgets import QTextEdit, QWidget, QDialog
 from PySide6.QtCore import Qt
+from typing import List
+
 from .ui_chat_item import Ui_ChatItem
+from .function_call_window import FunctionCallWindow
+from ..model.function import Function
+
 
 class ChatItem(QWidget):
     def __init__(self, parent_item, parent=None):
@@ -9,6 +14,25 @@ class ChatItem(QWidget):
         self.parent_item = parent_item
         self.ui = Ui_ChatItem()
         self.ui.setupUi(self)
+        
+        # Add an attribute to keep track of auto-indentation
+        self.auto_indent_next_line = True
+        self.ui.textEdit.keyPressEvent = self.handleKeyPressEvent
+        
+        self.function_call_data = {"name": None, "arguments": None}
+        self.functions = dict()
+        
+        # Initialize fn combo box to default value
+        self.ui.fnNameComboBox.addItem('none')
+        self.ui.fnNameComboBox.setCurrentIndex(0)
+        
+        # TODO: move somewhere outside
+        self.role2color = {
+            'system': '#f4ebff',
+            'user': '#ebf2ff',
+            'assistant': '#ebfff6',
+            'function': '#ffe9eb'
+        }
         
         self.ui.textEdit.document().contentsChanged.connect(self.on_content_changed)
         self.ui.textEdit.setAcceptRichText(False)
@@ -18,18 +42,9 @@ class ChatItem(QWidget):
         # Ignore wheel event
         self.ui.comboBox.wheelEvent = lambda x: ()
         self.ui.comboBox.currentIndexChanged.connect(self.on_content_changed)
+        self.ui.fnNameComboBox.currentIndexChanged.connect(self.on_content_changed)
+        self.ui.fnCallParamsPushButton.clicked.connect(self.on_fn_call_clicked)
         
-        # TODO: move somewhere outside
-        self.role2color = {
-            'system': '#f4ebff',
-            'user': '#ebf2ff',
-            'assistant': '#ebfff6',
-            'function': '#ffe9eb'
-        }
-        # Add an attribute to keep track of auto-indentation
-        self.auto_indent_next_line = True
-        self.ui.textEdit.keyPressEvent = self.handleKeyPressEvent
-
     # TextEdit modified keyPressEvent
     # Keeps tabulation on the same level as the previous line
     def handleKeyPressEvent(self, event: QKeyEvent):
@@ -83,23 +98,93 @@ class ChatItem(QWidget):
         self.ui.comboBox.clear()
         for role in roles:
             self.ui.comboBox.addItem(role)
+        self.ui.comboBox.setCurrentIndex(0)
+            
+    def set_functions(self, functions: List[Function], no_callback=True):
+        if no_callback:
+            self.ui.fnNameComboBox.currentIndexChanged.disconnect()
+        
+        current_fn = self.ui.fnNameComboBox.currentText()
+        print('set_functions', current_fn)
+        self.ui.fnNameComboBox.clear()
+        self.ui.fnNameComboBox.addItem('none')
+        for fn in functions:
+            self.ui.fnNameComboBox.addItem(fn.name)
+        
+        self.functions = dict([(fn.name, fn) for fn in functions])
+        if current_fn in self.functions:
+            self.ui.fnNameComboBox.setCurrentText(current_fn)
+        else:
+            self.ui.fnNameComboBox.setCurrentIndex(0)
+        
+        self.update_fn_ui_elements()
+        
+        self.ui.fnNameComboBox.currentIndexChanged.connect(self.on_content_changed)
     
-    def set_data(self, role, content):
+    def set_data(self, role, content, function_call_data=None, no_callback=True):
+        if no_callback:
+            self.ui.comboBox.currentIndexChanged.disconnect()
+            self.ui.textEdit.document().contentsChanged.disconnect()
+            self.ui.textEdit.document().documentLayout().documentSizeChanged.disconnect()
+            self.ui.fnNameComboBox.currentIndexChanged.disconnect()
+            
         self.ui.comboBox.setCurrentText(role)
         self.ui.textEdit.setPlainText(content)
+        
+        self.set_function_call_data(function_call_data)
+            
         self.update_height()
+        
+        # Enable callbacks
+        self.ui.comboBox.currentIndexChanged.connect(self.on_content_changed)
+        self.ui.textEdit.document().contentsChanged.connect(self.on_content_changed)
+        self.ui.textEdit.document().documentLayout().documentSizeChanged.connect(self.on_content_changed)
+        self.ui.fnNameComboBox.currentIndexChanged.connect(self.on_content_changed)
+    
+    def set_function_call_data(self, function_call_data):
+        print('received fn_call_data', function_call_data)
+        if function_call_data is None:
+            function_call_data = {"name": None, "arguments": None}
+            
+        if function_call_data['name'] is not None:
+            self.ui.fnNameComboBox.setCurrentText(function_call_data['name'])
+            print('set fn name')
+        else:
+            self.ui.fnNameComboBox.setCurrentIndex(0)
+            print('failed to set fn name')
+        self.function_call_data = function_call_data
     
     def get_data(self):
         # Role, content
-        return self.ui.comboBox.currentText(), self.ui.textEdit.toPlainText()
+        return self.ui.comboBox.currentText(), self.ui.textEdit.toPlainText(), self.function_call_data
     
     def on_content_changed(self):
         print('content changed')
+        current_fn = self.ui.fnNameComboBox.currentText()
+        print('current_fn', current_fn)
+        self.function_call_data["name"] = current_fn if current_fn != 'none' else None
         self.update_height()
         self.update_background_color_by_role()
         self.update_fn_ui_elements()
         if self.content_changed_callback:
+            # Parent item that's contained in QListWidget is passed
+            # as the callback is a ChatWindow's method and it must know which list item got changed
             self.content_changed_callback(self.parent_item)
+            
+    def on_fn_call_clicked(self):
+        fn_name = self.ui.fnNameComboBox.currentText()
+        fn = self.functions[fn_name]
+        
+        fn_call_window = FunctionCallWindow(fn.params)
+        if self.function_call_data is not None:
+            fn_call_window.set_data(self.function_call_data["arguments"])
+        result = fn_call_window.exec()
+        
+        if result == QDialog.Accepted:
+            params = fn_call_window.get_data()
+            self.function_call_data["arguments"] = params if len(params) > 0 else None
+            self.on_content_changed()
+            print('showed fn call!')
 
     def update_height(self):
         size = self.ui.textEdit.document().size().toSize()
@@ -113,6 +198,9 @@ class ChatItem(QWidget):
 
     def update_background_color_by_role(self):
         role = self.ui.comboBox.currentText()
+        if role not in self.role2color:
+            print(f'uknown role:d {role}')
+            return
         self.ui.widget.setStyleSheet(f'background-color: {self.role2color[role]};')
         
     def update_fn_ui_elements(self):
@@ -126,7 +214,7 @@ class ChatItem(QWidget):
         elif role == 'system':
             config_ui(False, False)
         elif role == 'assistant':
-            config_ui(True, True)
+            config_ui(True, self.ui.fnNameComboBox.currentText() != 'none')
         elif role == 'user':
             config_ui(False, False)
         else:

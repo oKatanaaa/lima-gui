@@ -1,5 +1,8 @@
 import openai
 import time
+from typing import List
+
+from ..model.function import Function
 
 OPEN_AI_DEFAULT_API_BASE = openai.api_base
 
@@ -51,21 +54,34 @@ class OpenAIService:
         assert api_type in self.get_api_types(), 'Invalid API type.'
         self.api_type = api_type
 
-    def generate_response(self, conversation, context=None):
+    def generate_response(self, conversation, context=None, functions: List[Function]=None):
         if self.api_type == OpenAIService.API_TYPE_CHAT:
-            return self._chat_response(conversation)
+            return self._chat_response(conversation, functions)
         elif self.api_type == OpenAIService.API_TYPE_COMPLETION:
             return self._completion_response(conversation, context)
         else:
             raise Exception('Invalid API type.')
             
-    def _chat_response(self, conversation):
-        response = openai.ChatCompletion.create(
-            model=self.model,
-            messages=conversation,
-            temperature=self.temperature,
-            stream=True
-        )
+    def _chat_response(self, conversation, functions: List[Function]=None):
+        if functions is not None:
+            functions = [f.to_openai_dict() for f in functions]
+            print('when generating response received functions', functions)
+            print('when generating response received conversation', conversation)
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=conversation,
+                functions=functions,
+                temperature=self.temperature,
+                stream=True
+            )
+        else:
+            print('no functions is provided')
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=conversation,
+                temperature=self.temperature,
+                stream=True
+            )
         iterator = iter(response)
         while True:
             start_time = time.time()
@@ -73,9 +89,10 @@ class OpenAIService:
                 chunk = next(iterator)
                 delta_time = time.time() - start_time
                 delta_text = chunk['choices'][0]['delta']
-                if 'content' not in delta_text:
-                    continue
-                yield delta_time, delta_text['content']
+                if 'content' in delta_text:
+                    yield delta_time, delta_text['content']
+                if 'function_call' in delta_text:
+                    yield delta_time, delta_text['function_call']
             except StopIteration:
                 break
     

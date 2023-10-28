@@ -1,7 +1,9 @@
 from PySide6.QtWidgets import QWidget, QMainWindow, QListWidgetItem
 from PySide6.QtCore import Qt
+from typing import List
 from .ui_chat_widget import Ui_ChatWidget
 from .chat_item import ChatItem
+from ..model.function import Function
 
 
 class ChatWindow(QMainWindow):
@@ -23,6 +25,7 @@ class ChatWindow(QMainWindow):
 
         self.roles = []
         self.generator_role = 'assistant'
+        self.functions = []
         
         self.ui.delete_msg_btn.clicked.connect(self.on_delete_msg_clicked)
         self.ui.name.textChanged.connect(self.on_name_changed)
@@ -67,12 +70,13 @@ class ChatWindow(QMainWindow):
     def set_name(self, name):
         self.ui.name.setText(name)
 
-    def add_msg(self, role, content):
+    def add_msg(self, role, content, fn_call_data=None):
         item = QListWidgetItem(self.ui.listWidget)
         print('added message', role, content)
         chat_item = ChatItem(item)
         chat_item.set_role_options(self.roles)
-        chat_item.set_data(role, content)
+        chat_item.set_functions(self.functions)
+        chat_item.set_data(role, content, fn_call_data)
         chat_item.set_content_changed_callback(self.on_item_changed)
         
         item.setSizeHint(chat_item.sizeHint())
@@ -82,8 +86,17 @@ class ChatWindow(QMainWindow):
         
         self.ui.listWidget.scrollToBottom()
         
-    def add_function(self, fn_name):
-        self.ui.fnListWidget.addItem(fn_name)
+    def set_functions(self, functions: List[dict]):
+        self.ui.fnListWidget.clear()
+        for fn in functions:
+            self.ui.fnListWidget.addItem(fn.name)
+        
+        for i in range(self.ui.listWidget.count()):
+            item = self.ui.listWidget.item(i)
+            chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
+            chat_item.set_functions(functions)
+        
+        self.functions = functions
 
     def set_close_callback(self, callback):
         self.close_callback = callback
@@ -138,11 +151,11 @@ class ChatWindow(QMainWindow):
         row_item = self.ui.listWidget.item(row_id)
         
         chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
-        role, content = chat_item.get_data()
+        role, content, fn_call_data = chat_item.get_data()
         
         row_item.setSizeHint(chat_item.sizeHint())
         
-        self.msg_changed_callback(row_id, role, content)
+        self.msg_changed_callback(row_id, role, content, fn_call_data)
         
     def on_name_changed(self):
         if self.name_changed_callback:
@@ -178,7 +191,7 @@ class ChatWindow(QMainWindow):
         row_id = self.ui.listWidget.currentRow()
         item = self.ui.listWidget.item(row_id)
         chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
-        role, content = chat_item.get_data()
+        role, content, fn_call_data = chat_item.get_data()
         print('role == self.generator_role:', role == self.generator_role)
         print('self.is_generate_allowed:', self.is_generate_allowed)
         self.ui.generate_btn.setEnabled(role == self.generator_role and self.is_generate_allowed)

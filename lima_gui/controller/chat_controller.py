@@ -2,6 +2,8 @@ from PySide6.QtCore import QThread, Qt, Signal
 from PySide6.QtCore import QTimer
 import time
 from functools import partial
+import json
+from typing import Optional
 
 from lima_gui.view.chat_window import ChatWindow
 from lima_gui.view.chat_item import ChatItem
@@ -14,14 +16,15 @@ from lima_gui.controller.function_desc_controller import FunctionDescController
 
 class ChatItemUpdater(QThread):
     update_period_sec = 0.25
-    update_signal = Signal(str)
+    update_signal = Signal(str, object, object)
     
-    def __init__(self, chat_item: ChatItem, conversation, assistant_role):
+    def __init__(self, chat_item: ChatItem, conversation, assistant_role, functions=[]):
         super().__init__()
         self.chat_item = chat_item
         self.openai_service = OpenAIService.get_instance()
         self.conversation = conversation
         self.assistant_role = assistant_role
+        self.functions = functions if len(functions) > 0 else None
         self.update_signal.connect(self.update_text)
     
     def run(self):
@@ -29,21 +32,55 @@ class ChatItemUpdater(QThread):
         before, after = context
         if self.openai_service.get_api_type() == OpenAIService.API_TYPE_CHAT:
             before, after = '', ''
-        text_postprocessor = lambda text: before + text + after
+            
+        def text_postprocessor(text, function_name, arguments):
+            content = before + text + after
+            if function_name:
+                content += '\n'
+                content += '\n---function call (this text will be removed once generation is finished)---'
+                content += '\nfunction_name: ' + function_name
+                content += '\narguments:\n' + arguments
+            return content
         
         text = ''
+        function_name = None
+        arguments = ''
         time_past = 0.0
         for delta_time, chunk in self.openai_service.generate_response(
-            self.conversation, context):
-            text += chunk
+            self.conversation, context, self.functions):
+            print(chunk)
+            if isinstance(chunk, str):
+                text += chunk
+            elif isinstance(chunk, dict):
+                if 'name' in chunk:
+                    function_name = chunk['name']
+                if 'arguments' in chunk:
+                    arguments += chunk['arguments']
             time_past += delta_time
             if time_past > self.update_period_sec:
-                self.update_signal.emit(text_postprocessor(text))
+                self.update_signal.emit(text_postprocessor(text, function_name, arguments), None, None)
                 time_past = 0.0
-        self.update_signal.emit(text_postprocessor(text))
+        self.update_signal.emit(text_postprocessor(text, None, None), function_name, arguments)
+        # if function_name:
+        #     self.update_function_call(function_name, arguments)
 
-    def update_text(self, text):
-        self.chat_item.set_data(self.assistant_role, text)
+    def update_text(self, text, function_name, arguments):
+        function_data = None
+        if function_name:
+            print('arguments', arguments)
+            function_data = {
+                'name': function_name,
+                'arguments': json.loads(arguments)
+            }
+        self.chat_item.set_data(self.assistant_role, text, function_call_data=function_data, no_callback=False)
+        
+    def update_function_call(self, function_name, arguments):
+        print('setting function call data')
+        function_data = {
+            'name': function_name,
+            'arguments': json.loads(arguments)
+        }
+        self.chat_item.set_function_call_data(function_data)
         
 
 class ChatController:
@@ -59,12 +96,11 @@ class ChatController:
         self.chat_window.set_language_options(self.settings.languages)
         self.chat_window.set_language(chat.language)
         self.chat_window.set_role_options(['system', 'user', 'assistant', 'function'], 'assistant')
+        self.chat_window.set_functions(chat.functions)
         for msg in chat.chat['dialog']:
-            role, content = msg['role'], msg['content']
-            self.chat_window.add_msg(role, content)
-        
-        for fn in chat.functions:
-            self.chat_window.add_function(fn.name)
+            role, content, fn_call_data = msg['role'], msg['content'], msg.get('function_call')
+            self.chat_window.add_msg(role, content, fn_call_data)
+
             
         self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
         self.chat_window.set_tag_options(self.settings.tags)
@@ -109,9 +145,12 @@ class ChatController:
         self.chat_window.add_msg(next_role, '')
         self.chat_window.set_msg_count(len(self.chat.chat['dialog']))
         
-    def on_msg_changed(self, ind, role, content):
+    def on_msg_changed(self, ind, role, content, fn_call_data):
         print('msg changed')
-        self.chat.edit_msg(ind, role, content)
+        print(fn_call_data)
+        if fn_call_data['name'] is None:
+            fn_call_data = None
+        self.chat.edit_msg(ind, role, content, fn_call_data)
         self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
     
     def on_delete_msg_clicked(self, ind):
@@ -141,12 +180,13 @@ class ChatController:
         self.chat_item_updater = ChatItemUpdater(
             chat_item=chat_item,
             conversation=conversation,
-            assistant_role='assistant'
+            assistant_role='assistant',
+            functions=self.chat.functions
         )
         self.chat_item_updater.start()
         
     def on_function_add_clicked(self):
-        function = Function.create_empty('New function')
+        function = Function.create_empty('new_function')
         fn_window = FunctionDescriptionWindow()
         fn_controller = FunctionDescController(fn_window, function)
         fn_controller.save_function_callback = self.on_function_created
@@ -159,13 +199,14 @@ class ChatController:
         print('function created')
         print(function)
         self.chat.add_fn(function)
-        self.chat_window.add_function(function.name)
+        self.chat_window.set_functions(self.chat.functions)
         self.fn_window.close()
         self.fn_controller = None
         self.fn_window = None
     
     def on_function_delete_clicked(self, ind):
         self.chat.remove_fn(ind)
+        self.chat_window.set_functions(self.chat.functions)
         
     def on_function_double_clicked(self, ind):
         function = self.chat.get_fn(ind)
@@ -186,5 +227,5 @@ class ChatController:
         self.fn_window.close()
         self.fn_controller = None
         self.fn_window = None
-
-    
+        
+        self.chat_window.set_functions(self.chat.functions)

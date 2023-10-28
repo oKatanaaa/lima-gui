@@ -81,8 +81,12 @@ class Chat:
     def add_msg(self, role, content):
         self.chat["dialog"].append({"role": role, "content": content})
     
-    def edit_msg(self, ind, role, content):
-        self.chat["dialog"][ind] = {"role": role, "content": content}
+    def edit_msg(self, ind, role, content, function_call_data=None):
+        print(ind, role, content, function_call_data)
+        msg = {"role": role, "content": content}
+        if function_call_data is not None:
+            msg["function_call"] = function_call_data
+        self.chat["dialog"][ind] = msg
     
     def remove_msg(self, ind):
         self.chat["dialog"].pop(ind)

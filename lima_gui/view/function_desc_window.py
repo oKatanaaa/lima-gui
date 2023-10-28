@@ -80,10 +80,12 @@ class FunctionDescriptionWindow(QWidget):
     def on_delete_param_clicked(self):
         row_id = self.ui.parametersListWidget.currentRow()
         
+        self.ui.parametersListWidget.takeItem(row_id)
+        
         if self.delete_param_clicked_callback:
             self.delete_param_clicked_callback(row_id)
             
     def closeEvent(self, event):
         event.accept()
-        if self.save_function_callback:
-            self.save_function_callback()
+        # if self.save_function_callback:
+        #     self.save_function_callback()

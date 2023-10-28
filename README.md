@@ -85,6 +85,55 @@ Other important things:
 - You can replace the API base for the OpenAI API. Meaning you can host you own model to help you in your endeavors (I haven't tested it yet though, but it should work). The only requirement is that the hosting framework of your choice should mimic OpenAI API format. I am using [SimpleAI](https://github.com/lhenault/simpleAI) and it works great for me.
 - See the jupyter notebook (`data_loading.ipynb`) in the examples folder for a small showcase of how you can load your data at the moment.
 
+### Function calling
+> [!WARNING] 
+> This functionality is not finished at the moment and is not recommended to use.
+
+LIMA-GUI also supports function calling API. The underlying data format is not fully compliant with what OpenAI API expects, but can be easily converted to one using `to_openai_dict` method in the `Function` class.
+
+Data format:
+- functions defined inside a conversation:
+```json
+{
+    "name": "function_name",
+    "description": "function_description (optional)",
+    "params": [
+        {
+            "name": "arg1_name",
+            "description": "param_description (optional)",
+            "type": "param_type (int, string, etc)",
+            "required": false,
+            "enum": ["val1", "val2"]
+        }
+    ]
+}
+```
+> [!NOTE]
+> `description` and `enum` fields can be skipped.
+- messages
+```json
+[
+    {
+        "role": "assistant",
+        "content": "content (cant be none)",
+        "function_call": {
+            "name": "function_name",
+            "arguments": {
+                "arg1_name": "value",
+                "arg2_name": "value"
+            }
+        }
+    },
+    {
+        "role": "function",
+        "name": "function_name",
+        "content": "function's response"
+    }
+]
+```
+> [!NOTE]
+> **Messages'** underlying data format is fully compliant with OpenAI API and can be used *as is*. 
+
 ## Caution
 
 The project is still in its early stages, so expect a few bumps along the road. For instance, you'll need to manually save your data (Ctrl + S) to avoid losing changes. The program won't prompt you to save when exiting. Nevertheless, I've found the current feature set to be super handy (at least for my needs).
