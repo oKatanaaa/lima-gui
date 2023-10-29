@@ -190,6 +190,10 @@ class ChatWindow(QMainWindow):
             
     def on_item_selection_changed(self):
         row_id = self.ui.listWidget.currentRow()
+        
+        if row_id == -1:
+            return
+        
         item = self.ui.listWidget.item(row_id)
         chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
         role, content, fn_call_data = chat_item.get_data()

@@ -1,6 +1,7 @@
 import openai
 import time
 from typing import List, Optional
+import json
 
 from ..model.function import Function
 
@@ -65,7 +66,7 @@ class OpenAIService:
     def _chat_response(self, conversation, functions: Optional[List[Function]] = None):
         for msg in conversation:
             if 'function_call' in msg and 'arguments' in msg['function_call']:
-                msg['function_call']['arguments'] = str(msg['function_call']['arguments'])
+                msg['function_call']['arguments'] = json.dumps(msg['function_call']['arguments'])
         if functions is not None:
             functions = [f.to_openai_dict() for f in functions]
             print('when generating response received functions', functions)

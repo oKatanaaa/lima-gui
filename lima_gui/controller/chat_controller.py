@@ -144,7 +144,7 @@ class ChatController:
         elif last_role == 'function':
             next_role = 'assistant'
         else:
-            next_role = 'assistant'
+            next_role = 'system'
         
         self.chat.add_msg(next_role, '')
         

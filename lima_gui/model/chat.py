@@ -11,7 +11,8 @@ class Chat:
         'name': DEFAULT_NAME,
         'lang': DEFAULT_LANG,
         'dialog': [],
-        'tags': DEFAULT_TAGS
+        'tags': DEFAULT_TAGS,
+        'functions': []
     }
     
     @staticmethod
@@ -94,7 +95,7 @@ class Chat:
     def edit_msg(self, ind, role, content, function_call_data=None):
         print(ind, role, content, function_call_data)
         msg = {"role": role, "content": content}
-        if function_call_data is not None:
+        if function_call_data is not None and role == 'assistant':
             msg["function_call"] = function_call_data
         
         # It is assummed that previous message contains a function call.

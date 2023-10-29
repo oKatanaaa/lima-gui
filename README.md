@@ -87,7 +87,8 @@ Other important things:
 
 ### Function calling
 > [!WARNING] 
-> This functionality is not finished at the moment and is not recommended to use.
+> This functionality is experimental at the moment and you may encounter data corrupting bugs.
+> Make sure you have a running copy of your data before using this functionality.
 
 LIMA-GUI also supports function calling API. The underlying data format is not fully compliant with what OpenAI API expects, but can be easily converted to one using `to_openai_dict` method in the `Function` class.
 
@@ -156,7 +157,7 @@ If you experience any problem, please make a corresponding issue.
     - [ ] Automatic saving (optional).
     - [ ] Asking to save if haven't already.
     - [ ] Ctrl + S should save in an already opened file.
-    - [ ] Show somewhere little message "Saved".
+    - [ ] Show somewhere a little message "Saved".
 - [ ] Somehow refactor current shitty chat UI.
     - [x] Make scrolling smooth.
     - [x] Make list items fit message contents.
@@ -176,8 +177,9 @@ If you experience any problem, please make a corresponding issue.
     - [ ] Token count support.
     - [ ] Stopping generation (!).
     - [ ] Function calling.
-        - [ ] Proper UI for function call messages.
-        - [ ] Function roles.
+        - [x] Proper UI for function call messages.
+        - [x] Function roles.
+        - [ ] Data integrity when changing functions on the fly.
 - [x] Keep tabulation.
 - [ ] Save settings/current config.
 - [ ] Import ChatGPT exported dialogues.

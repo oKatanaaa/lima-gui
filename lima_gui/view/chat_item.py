@@ -38,10 +38,11 @@ class ChatItem(QWidget):
         self.ui.textEdit.setAcceptRichText(False)
         self.content_changed_callback = None
         
-        self.ui.textEdit.document().documentLayout().documentSizeChanged.connect(self.on_content_changed)
+        self.ui.textEdit.document().documentLayout().documentSizeChanged.connect(self.update_height)
         # Ignore wheel event
         self.ui.comboBox.wheelEvent = lambda x: ()
         self.ui.comboBox.currentIndexChanged.connect(self.on_content_changed)
+        self.ui.fnNameComboBox.wheelEvent = lambda x: ()
         self.ui.fnNameComboBox.currentIndexChanged.connect(self.on_content_changed)
         self.ui.fnCallParamsPushButton.clicked.connect(self.on_fn_call_clicked)
         
@@ -122,18 +123,21 @@ class ChatItem(QWidget):
         self.ui.fnNameComboBox.currentIndexChanged.connect(self.on_content_changed)
     
     def set_data(self, role, content, function_call_data=None, no_callback=True):
-        if no_callback:
-            self.ui.comboBox.currentIndexChanged.disconnect()
-            self.ui.textEdit.document().contentsChanged.disconnect()
-            self.ui.textEdit.document().documentLayout().documentSizeChanged.disconnect()
-            self.ui.fnNameComboBox.currentIndexChanged.disconnect()
+        self.ui.comboBox.currentIndexChanged.disconnect()
+        self.ui.textEdit.document().contentsChanged.disconnect()
+        self.ui.textEdit.document().documentLayout().documentSizeChanged.disconnect()
+        self.ui.fnNameComboBox.currentIndexChanged.disconnect()
             
         self.ui.comboBox.setCurrentText(role)
         self.ui.textEdit.setPlainText(content)
         
         self.set_function_call_data(function_call_data)
+        
+        if no_callback:
+            self.update_height()
             
-        self.update_height()
+        if not no_callback:
+            self.on_content_changed()
         
         # Enable callbacks
         self.ui.comboBox.currentIndexChanged.connect(self.on_content_changed)
