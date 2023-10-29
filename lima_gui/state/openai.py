@@ -1,6 +1,6 @@
 import openai
 import time
-from typing import List
+from typing import List, Optional
 
 from ..model.function import Function
 
@@ -8,7 +8,7 @@ OPEN_AI_DEFAULT_API_BASE = openai.api_base
 
 
 class OpenAIService: 
-    instance = None
+    instance: Optional['OpenAIService'] = None
     API_TYPE_CHAT = 'chat'
     API_TYPE_COMPLETION = 'completion'
     
@@ -54,7 +54,7 @@ class OpenAIService:
         assert api_type in self.get_api_types(), 'Invalid API type.'
         self.api_type = api_type
 
-    def generate_response(self, conversation, context=None, functions: List[Function]=None):
+    def generate_response(self, conversation, context=None, functions: Optional[List[Function]] = None):
         if self.api_type == OpenAIService.API_TYPE_CHAT:
             return self._chat_response(conversation, functions)
         elif self.api_type == OpenAIService.API_TYPE_COMPLETION:
@@ -62,7 +62,10 @@ class OpenAIService:
         else:
             raise Exception('Invalid API type.')
             
-    def _chat_response(self, conversation, functions: List[Function]=None):
+    def _chat_response(self, conversation, functions: Optional[List[Function]] = None):
+        for msg in conversation:
+            if 'function_call' in msg and 'arguments' in msg['function_call']:
+                msg['function_call']['arguments'] = str(msg['function_call']['arguments'])
         if functions is not None:
             functions = [f.to_openai_dict() for f in functions]
             print('when generating response received functions', functions)

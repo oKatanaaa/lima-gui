@@ -156,6 +156,7 @@ class ChatWindow(QMainWindow):
         row_item.setSizeHint(chat_item.sizeHint())
         
         self.msg_changed_callback(row_id, role, content, fn_call_data)
+        self.on_item_selection_changed()
         
     def on_name_changed(self):
         if self.name_changed_callback:

@@ -57,6 +57,12 @@ class Chat:
     def language(self, lang):
         assert lang in ['en', 'ru']
         self.chat["lang"] = lang
+    
+    @property
+    def last_msg(self):
+        if len(self.chat["dialog"]) == 0:
+            return None
+        return self.chat["dialog"][-1]
         
     @property
     def last_role(self):
@@ -79,13 +85,21 @@ class Chat:
         return len(self.chat["dialog"])
     
     def add_msg(self, role, content):
-        self.chat["dialog"].append({"role": role, "content": content})
+        msg = {"role": role, "content": content}
+        # It is assummed that previous message contains a function call.
+        if role == 'function':
+            msg["name"] = self.chat["dialog"][-1]["function_call"]["name"]
+        self.chat["dialog"].append(msg)
     
     def edit_msg(self, ind, role, content, function_call_data=None):
         print(ind, role, content, function_call_data)
         msg = {"role": role, "content": content}
         if function_call_data is not None:
             msg["function_call"] = function_call_data
+        
+        # It is assummed that previous message contains a function call.
+        if role == 'function':
+            msg["name"] = self.chat["dialog"][ind - 1]["function_call"]["name"]
         self.chat["dialog"][ind] = msg
     
     def remove_msg(self, ind):
@@ -111,7 +125,7 @@ class Chat:
         self.chat["tags"].remove(tag)
         
     def get_conversation_history(self, ind):
-        return self.chat["dialog"][:ind]
+        return deepcopy(self.chat["dialog"][:ind])
 
     def to_str(self):
         return '\n'.join([msg['content'] for msg in self.chat['dialog']])

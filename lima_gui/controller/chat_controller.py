@@ -131,14 +131,20 @@ class ChatController:
     def on_add_msg_clicked(self):
         print('add msg clicked')
         last_role = self.chat.last_role
+        last_msg = self.chat.last_msg
         if last_role == 'system':
             next_role = 'user'
         elif last_role == 'user':
             next_role = 'assistant'
         elif last_role == 'assistant':
-            next_role = 'user'
+            if 'function_call' in last_msg:
+                next_role = 'function'
+            else:
+                next_role = 'user'
+        elif last_role == 'function':
+            next_role = 'assistant'
         else:
-            next_role = 'system'
+            next_role = 'assistant'
         
         self.chat.add_msg(next_role, '')
         
@@ -148,8 +154,11 @@ class ChatController:
     def on_msg_changed(self, ind, role, content, fn_call_data):
         print('msg changed')
         print(fn_call_data)
+        
+        # Do not add fn_call_data if it is empty
         if fn_call_data['name'] is None:
             fn_call_data = None
+
         self.chat.edit_msg(ind, role, content, fn_call_data)
         self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
     
