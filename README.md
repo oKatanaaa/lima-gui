@@ -47,6 +47,9 @@ That's why I decided to make my own tool, keeping things straightforward:
 
 ## LIMA-GUI functionality
 
+> [!NOTE]
+> Current UI visualizations are bit outdated as I added support for function calling.
+
 LIMA-GUI allows you to manage manually curated (basically hand written) chat data. Main window:
 
 ![Main window](examples/images/main_window.png)
@@ -90,7 +93,14 @@ Other important things:
 > This functionality is experimental at the moment and you may encounter data corrupting bugs.
 > Make sure you have a running copy of your data before using this functionality.
 
-LIMA-GUI also supports function calling API. The underlying data format is not fully compliant with what OpenAI API expects, but can be easily converted to one using `to_openai_dict` method in the `Function` class.
+LIMA-GUI also supports function calling API:
+- You can define multiple functions within a chat (python code executors, data retrieval systems, etc.). 
+- Assistant messages may contain function calls.
+- Function calling is integrated with OpenAI API so the calls may be generated automatically.
+
+![Function calling](examples/images/chat_fncalling.gif)
+
+The underlying data format is not fully compliant with what OpenAI API expects, but can be easily converted to one using `to_openai_dict` method in the `Function` class.
 
 Data format:
 - functions defined inside a conversation:
@@ -135,6 +145,8 @@ Data format:
 > [!NOTE]
 > **Messages'** underlying data format is fully compliant with OpenAI API and can be used *as is*. 
 
+See `examples` folder for a sample of chats with function calling.
+
 ## Caution
 
 The project is still in its early stages, so expect a few bumps along the road. For instance, you'll need to manually save your data (Ctrl + S) to avoid losing changes. The program won't prompt you to save when exiting. Nevertheless, I've found the current feature set to be super handy (at least for my needs).
@@ -166,9 +178,9 @@ If you experience any problem, please make a corresponding issue.
     - [ ] Scroll down the focused ChatItem during AI text generation.
     - [ ] Automatically focus the item you are typing in.
 - [ ] Huggingface integration (download/upload the dataset).
-- [ ] Deletion of multiple 
+- [ ] Deletion of multiple messages.
 - [x] Token count using Huggingface tokenizers (LLAMA tokenizer by default).
-- [ ] Manual on how to use lima-gui.
+- [ ] Manual on how to use lima-gui (!).
 - [x] Tags for chats (like coding, logic, qa, etc).
 - [x] Default dataset config (contains config for languages, tags and tokenizer).
 - [x] OpenAI API integration to allow for AI generated answers.
@@ -179,12 +191,13 @@ If you experience any problem, please make a corresponding issue.
     - [ ] Function calling.
         - [x] Proper UI for function call messages.
         - [x] Function roles.
-        - [ ] Data integrity when changing functions on the fly.
+        - [ ] Data integrity when changing functions on the fly (!).
 - [x] Keep tabulation.
 - [ ] Save settings/current config.
 - [ ] Import ChatGPT exported dialogues.
 - [ ] Stats board that shows various useful statistics about current data (token count distribution, number of samples by tags/languages).
 - [ ] Remove stupid prints and add proper logging.
+- [ ] Explain tags.
 
 ## Pull requests
 

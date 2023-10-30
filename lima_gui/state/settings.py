@@ -19,7 +19,8 @@ class Settings:
         'contextual qa',
         'logic',
         'coding',
-        'meta problems'
+        'meta problems',
+        'agent'
     ]
     DEFAULT_TOKENIZER = 'OpenAssistant/llama2-13b-orca-8k-3319'
     

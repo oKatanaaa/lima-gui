@@ -13,7 +13,8 @@
 		"logic", 
 		"coding", 
 		"meta problems",
-		"conversational"
+		"conversational",
+		"agent"
 	],
-	"tokenizer": "meta-llama/Llama-2-7b-hf"
+	"tokenizer": "OpenAssistant/llama2-13b-orca-8k-3319"
 }
