@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer
+from tokenizers import Tokenizer
 
 
 class Settings:
@@ -38,7 +38,7 @@ class Settings:
         
     def set_tokenizer(self, tokenizer_name: str):
         self.tokenizer_name = tokenizer_name
-        self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+        self.tokenizer = Tokenizer.from_pretrained(tokenizer_name)
         
     def get_token_count(self, str):
-        return len(self.tokenizer.tokenize(str))
+        return len(self.tokenizer.encode(str))
