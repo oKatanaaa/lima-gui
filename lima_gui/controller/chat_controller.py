@@ -52,7 +52,7 @@ class ChatItemUpdater(QThread):
             if isinstance(chunk, str):
                 text += chunk
             elif isinstance(chunk, dict):
-                if 'name' in chunk:
+                if 'name' in chunk and chunk['name'] is not None:
                     function_name = chunk['name']
                 if 'arguments' in chunk:
                     arguments += chunk['arguments']

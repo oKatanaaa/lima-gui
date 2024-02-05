@@ -1,11 +1,11 @@
-import openai
+from openai import OpenAI, base_url
 import time
 from typing import List, Optional
 import json
 
 from ..model.function import Function
 
-OPEN_AI_DEFAULT_API_BASE = openai.api_base
+OPEN_AI_DEFAULT_API_BASE = base_url
 
 
 class OpenAIService: 
@@ -29,6 +29,8 @@ class OpenAIService:
         self.enabled = False
         self.api_type = OpenAIService.API_TYPE_CHAT
         self.max_completion_tokens = 200
+        self.api_base = OPEN_AI_DEFAULT_API_BASE
+        self.api_key = ''
 
     def set_model(self, model):
         self.model = model
@@ -40,10 +42,10 @@ class OpenAIService:
         if len(api_base) == 0:
             api_base = OPEN_AI_DEFAULT_API_BASE
         
-        openai.api_base = api_base
+        self.api_base = api_base
     
     def set_api_key(self, api_key):
-        openai.api_key = api_key
+        self.api_key = api_key
         
     def get_api_types(self):
         return [OpenAIService.API_TYPE_CHAT, OpenAIService.API_TYPE_COMPLETION]
@@ -54,6 +56,10 @@ class OpenAIService:
     def set_api_type(self, api_type):
         assert api_type in self.get_api_types(), 'Invalid API type.'
         self.api_type = api_type
+    
+    @property
+    def openai(self):
+        return OpenAI(api_key=self.api_key, base_url=self.api_base)
 
     def generate_response(self, conversation, context=None, functions: Optional[List[Function]] = None):
         if self.api_type == OpenAIService.API_TYPE_CHAT:
@@ -71,7 +77,7 @@ class OpenAIService:
             functions = [f.to_openai_dict() for f in functions]
             print('when generating response received functions', functions)
             print('when generating response received conversation', conversation)
-            response = openai.ChatCompletion.create(
+            response = self.openai.chat.completions.create(
                 model=self.model,
                 messages=conversation,
                 functions=functions,
@@ -80,25 +86,23 @@ class OpenAIService:
             )
         else:
             print('no functions is provided')
-            response = openai.ChatCompletion.create(
+            response = self.openai.chat.completions.create(
                 model=self.model,
                 messages=conversation,
                 temperature=self.temperature,
                 stream=True
             )
-        iterator = iter(response)
-        while True:
+            
+        start_time = time.time()
+        for chunk in response:
+            delta_time = time.time() - start_time
+            delta = chunk.choices[0].delta
+            if delta.content is not None:
+                yield delta_time, delta.content
+            if delta.function_call is not None:
+                delta_dict = {'name': delta.function_call.name, 'arguments': delta.function_call.arguments}
+                yield delta_time, delta_dict
             start_time = time.time()
-            try:
-                chunk = next(iterator)
-                delta_time = time.time() - start_time
-                delta_text = chunk['choices'][0]['delta']
-                if 'content' in delta_text:
-                    yield delta_time, delta_text['content']
-                if 'function_call' in delta_text:
-                    yield delta_time, delta_text['function_call']
-            except StopIteration:
-                break
     
     def _completion_response(self, conversation, context):
         # Convert conversation into a single prompt
@@ -112,7 +116,7 @@ class OpenAIService:
         before, after = context
         prompt += f'<assistant>\n{before}<end>'
         
-        response = openai.Completion.create(
+        response = self.openai.completions.create(
             model=self.model,
             prompt=prompt,
             suffix=after,
@@ -120,15 +124,12 @@ class OpenAIService:
             max_tokens=self.max_completion_tokens,
             stream=True
         )
-        iterator = iter(response)
-        while True:
+
+        start_time = time.time()
+        for chunk in response:
+            delta_time = time.time() - start_time
+            delta = chunk.choices[0]
+            if delta.text is None:
+                continue
+            yield delta_time, delta.text
             start_time = time.time()
-            try:
-                chunk = next(iterator)
-                delta_time = time.time() - start_time
-                delta_text = chunk['choices'][0]
-                if 'text' not in delta_text:
-                    continue
-                yield delta_time, delta_text['text']
-            except StopIteration:
-                break
