@@ -1,7 +1,9 @@
+from lima_gui.logging import all_methods_logger
 from lima_gui.view.function_desc_window import FunctionDescriptionWindow
 from lima_gui.model.function import Function
 
 
+@all_methods_logger
 class FunctionDescController:
     def __init__(
         self, function_desc_window: FunctionDescriptionWindow, function: Function
@@ -35,11 +37,9 @@ class FunctionDescController:
             self.save_function_callback(self.function)
             
     def on_param_updated(self, ind, data):
-        print('param updated', ind, data)
         self.function.edit_param(ind, data)
             
     def on_add_param_clicked(self):
-        print('add param clicked')
         self.function_desc_window.add_param(Function.create_empty_param())
         self.function.add_param(Function.create_empty_param())
     

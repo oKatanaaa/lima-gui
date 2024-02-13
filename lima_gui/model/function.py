@@ -1,7 +1,9 @@
 from typing import Dict, List
 from copy import deepcopy
+from lima_gui.logging import all_methods_logger
 
 
+@all_methods_logger
 class Function:
     """
     See https://platform.openai.com/docs/guides/gpt/function-calling for more details.
@@ -85,8 +87,6 @@ class Function:
         self.fn_dict["params"][ind] = param_dict
         
     def remove_param(self, ind: int):
-        print(self.fn_dict["params"])
-        print(ind)
         self.fn_dict["params"].pop(ind)
     
     def to_openai_dict(self):

@@ -93,7 +93,6 @@ class Chat:
         self.chat["dialog"].append(msg)
     
     def edit_msg(self, ind, role, content, function_call_data=None):
-        print(ind, role, content, function_call_data)
         msg = {"role": role, "content": content}
         if function_call_data is not None and role == 'assistant':
             msg["function_call"] = function_call_data

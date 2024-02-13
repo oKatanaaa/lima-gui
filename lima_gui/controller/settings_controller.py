@@ -1,9 +1,11 @@
 import json
 
+from lima_gui.logging import all_methods_logger
 from lima_gui.view.settings_window import SettingsWindow
 from lima_gui.state.settings import Settings
 
 
+@all_methods_logger
 class SettingsController:
     def __init__(self, settings_window: SettingsWindow):
         self.settings_window = settings_window

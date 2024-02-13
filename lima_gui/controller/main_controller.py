@@ -2,6 +2,7 @@ import pandas as pd
 from functools import partial
 from copy import deepcopy
 
+from lima_gui.logging import all_methods_logger
 from lima_gui.view.main_window import MainWindow
 from lima_gui.view.chat_window import ChatWindow
 from lima_gui.view.settings_window import SettingsWindow
@@ -12,6 +13,7 @@ from .settings_controller import SettingsController
 from .openai_controller import OpenAIController
 
 
+@all_methods_logger
 class Controller:
     def __init__(self, main_window: MainWindow):
         self.main_window = main_window
@@ -32,28 +34,23 @@ class Controller:
         self.chat_controllers = set()
     
     def on_save_triggered(self, filename):
-        print('save triggered', filename)
         pd = self.dataset.to_pandas()
         pd.to_csv(filename, index=False)
         
     def on_open_triggered(self, filename):
-        print('open triggered', filename)
         self.dataset = ChatDataset.from_pandas(pd.read_csv(filename))
         self.update_table()
         
     def on_add_chat_clicked(self):
-        print('add chat clicked')
         chat = Chat.create_empty()
         self.dataset.add_chat(chat)
         self.main_window.add_chat_item([
             chat.name, chat.language, len(chat)])
         
     def on_delete_chat_clicked(self, row_id):
-        print('delete chat clicked', row_id)
         self.dataset.remove_chat(row_id)
     
     def on_copy_chat_clicked(self, row_id):
-        print('copy chat clicked', row_id)
         if row_id == -1:
             return
         
@@ -65,7 +62,6 @@ class Controller:
             chat.name, chat.language, len(chat)])
         
     def on_chat_double_clicked(self, row_id):
-        print('chat double clicked', row_id)
         chat_window = ChatWindow()
         chat_controller = ChatController(
             chat_window, self.dataset.get_chat(row_id))
@@ -76,7 +72,6 @@ class Controller:
         chat_window.show()
     
     def on_chat_window_close(self, chat_controller):
-        print('chat window closed')
         self.chat_controllers.remove(chat_controller)
         self.update_table()
         
@@ -88,7 +83,6 @@ class Controller:
         settings_window.show()
         
     def on_settings_window_close(self):
-        print('settings window closed')
         self.settings_controller = None
         self.update_table()
         

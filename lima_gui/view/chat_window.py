@@ -1,11 +1,15 @@
 from PySide6.QtWidgets import QWidget, QMainWindow, QListWidgetItem
 from PySide6.QtCore import Qt
 from typing import List
+from loguru import logger
+
+from lima_gui.logging import all_methods_logger
 from .ui_chat_widget import Ui_ChatWidget
 from .chat_item import ChatItem
 from ..model.function import Function
 
 
+@all_methods_logger
 class ChatWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -72,7 +76,6 @@ class ChatWindow(QMainWindow):
 
     def add_msg(self, role, content, fn_call_data=None):
         item = QListWidgetItem(self.ui.listWidget)
-        print('added message', role, content)
         chat_item = ChatItem(item)
         chat_item.set_role_options(self.roles)
         chat_item.set_functions(self.functions)
@@ -158,16 +161,15 @@ class ChatWindow(QMainWindow):
         self.msg_changed_callback(row_id, role, content, fn_call_data)
         self.on_item_selection_changed()
         
-    def on_name_changed(self):
+    def on_name_changed(self, new_name):
         if self.name_changed_callback:
             self.name_changed_callback(self.ui.name.text())
         
-    def on_language_changed(self):
+    def on_language_changed(self, new_lang):
         if self.language_changed_callback:
             self.language_changed_callback(self.ui.language.currentText())
             
     def on_tag_added(self):
-        print('window. on tag added')
         tag = self.ui.tagComboBox.currentText()
         
         # Don't add existing tags
@@ -197,8 +199,6 @@ class ChatWindow(QMainWindow):
         item = self.ui.listWidget.item(row_id)
         chat_item: ChatItem = self.ui.listWidget.itemWidget(item)
         role, content, fn_call_data = chat_item.get_data()
-        print('role == self.generator_role:', role == self.generator_role)
-        print('self.is_generate_allowed:', self.is_generate_allowed)
         self.ui.generate_btn.setEnabled(role == self.generator_role and self.is_generate_allowed)
 
     def on_generate_clicked(self):

@@ -1,10 +1,11 @@
 from PySide6.QtCore import QThread, Qt, Signal
 from PySide6.QtCore import QTimer
-import time
+from loguru import logger
 from functools import partial
 import json
 from typing import Optional
 
+from lima_gui.logging import all_methods_logger
 from lima_gui.view.chat_window import ChatWindow
 from lima_gui.view.chat_item import ChatItem
 from lima_gui.view.function_desc_window import FunctionDescriptionWindow
@@ -67,7 +68,7 @@ class ChatItemUpdater(QThread):
     def update_text(self, text, function_name, arguments):
         function_data = None
         if function_name:
-            print('arguments', arguments)
+            logger.debug('arguments', arguments)
             function_data = {
                 'name': function_name,
                 'arguments': json.loads(arguments)
@@ -75,17 +76,17 @@ class ChatItemUpdater(QThread):
         self.chat_item.set_data(self.assistant_role, text, function_call_data=function_data, no_callback=False)
         
     def update_function_call(self, function_name, arguments):
-        print('setting function call data')
+        logger.debug('setting function call data')
         function_data = {
             'name': function_name,
             'arguments': json.loads(arguments)
         }
         self.chat_item.set_function_call_data(function_data)
-        
 
+       
+@all_methods_logger
 class ChatController:
     def __init__(self, chat_window: ChatWindow, chat: Chat):
-        print('created chat controller')
         self.chat_window = chat_window
         self.chat = chat
         
@@ -129,7 +130,6 @@ class ChatController:
         self.chat_item_updater = None
     
     def on_add_msg_clicked(self):
-        print('add msg clicked')
         last_role = self.chat.last_role
         last_msg = self.chat.last_msg
         if last_role == 'system':
@@ -152,9 +152,6 @@ class ChatController:
         self.chat_window.set_msg_count(len(self.chat.chat['dialog']))
         
     def on_msg_changed(self, ind, role, content, fn_call_data):
-        print('msg changed')
-        print(fn_call_data)
-        
         # Do not add fn_call_data if it is empty
         if fn_call_data['name'] is None:
             fn_call_data = None
@@ -163,28 +160,22 @@ class ChatController:
         self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
     
     def on_delete_msg_clicked(self, ind):
-        print('delete msg clicked')
         self.chat.remove_msg(ind)
         self.chat_window.set_msg_count(len(self.chat.chat['dialog']))
 
     def on_name_changed(self, name):
-        print('name changed')
         self.chat.name = name
     
     def on_language_changed(self, lang):
-        print('language changed')
         self.chat.language = lang
         
     def on_tag_added(self, tag):
-        print('tag added')
         self.chat.add_tag(tag)
         
     def on_tag_deleted(self, tag):
-        print('tag deleted')
         self.chat.remove_tag(tag)
         
     def on_generate_clicked(self, ind, chat_item):
-        print('generate clicked')
         conversation = self.chat.get_conversation_history(ind)
         self.chat_item_updater = ChatItemUpdater(
             chat_item=chat_item,
@@ -205,8 +196,6 @@ class ChatController:
         fn_window.show()
     
     def on_function_created(self, function: Function):
-        print('function created')
-        print(function)
         self.chat.add_fn(function)
         self.chat_window.set_functions(self.chat.functions)
         self.fn_window.close()
@@ -219,7 +208,6 @@ class ChatController:
         
     def on_function_double_clicked(self, ind):
         function = self.chat.get_fn(ind)
-        print('fn double clicked, name', function.name)
         
         fn_window = FunctionDescriptionWindow()
         fn_controller = FunctionDescController(fn_window, function)
@@ -230,8 +218,6 @@ class ChatController:
         fn_window.show()
 
     def on_function_updated(self, ind, function):
-        print('fn updated, name', function.name)
-        print(function)
         self.chat.edit_fn(ind, function)
         self.fn_window.close()
         self.fn_controller = None
