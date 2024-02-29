@@ -2,12 +2,15 @@ from openai import OpenAI, base_url
 import time
 from typing import List, Optional
 import json
+from loguru import logger
 
 from ..model.function import Function
+from lima_gui.logging import all_methods_logger
 
 OPEN_AI_DEFAULT_API_BASE = base_url
 
 
+@all_methods_logger
 class OpenAIService: 
     instance: Optional['OpenAIService'] = None
     API_TYPE_CHAT = 'chat'
@@ -67,6 +70,7 @@ class OpenAIService:
         elif self.api_type == OpenAIService.API_TYPE_COMPLETION:
             return self._completion_response(conversation, context)
         else:
+            logger.exception('Invalid API type.', api_type=self.api_type)
             raise Exception('Invalid API type.')
             
     def _chat_response(self, conversation, functions: Optional[List[Function]] = None):
@@ -75,8 +79,8 @@ class OpenAIService:
                 msg['function_call']['arguments'] = json.dumps(msg['function_call']['arguments'])
         if functions is not None:
             functions = [f.to_openai_dict() for f in functions]
-            print('when generating response received functions', functions)
-            print('when generating response received conversation', conversation)
+            logger.debug('when generating response received functions', functions)
+            logger.debug('when generating response received conversation', conversation)
             response = self.openai.chat.completions.create(
                 model=self.model,
                 messages=conversation,
@@ -85,7 +89,7 @@ class OpenAIService:
                 stream=True
             )
         else:
-            print('no functions is provided')
+            logger.debug('no functions is provided')
             response = self.openai.chat.completions.create(
                 model=self.model,
                 messages=conversation,
@@ -110,12 +114,13 @@ class OpenAIService:
         for msg in conversation:
             role = msg['role']
             content = msg['content']
-            prompt += f'<{role}>\n{content}<end>'
-        
+            prompt += f'<|im_start|>{role}\n{content}<|im_end|>\n'
         assert role == 'user', 'User role is required as the last role.'
-        before, after = context
-        prompt += f'<assistant>\n{before}<end>'
         
+        before, after = context
+        prompt += f'<|im_start|>assistant\n{before}'
+        if len(after) == 0:
+            after = None
         response = self.openai.completions.create(
             model=self.model,
             prompt=prompt,

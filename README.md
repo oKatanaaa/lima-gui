@@ -199,6 +199,7 @@ If you experience any problem, please make a corresponding issue.
 - [ ] Stats board that shows various useful statistics about current data (token count distribution, number of samples by tags/languages).
 - [x] Remove stupid prints and add proper logging.
 - [ ] Explain tags.
+- [ ] Save in OpenAI datasets format ('.json') (!).
 
 ## Pull requests
 
