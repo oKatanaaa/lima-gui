@@ -44,6 +44,19 @@ class ChatDataset:
         
         return pd.DataFrame(data, columns=["chat"])
     
+    def __hash__(self) -> int:
+        global_repr = ""
+        for chat in self.chats:
+            chat_str = json.dumps(chat)
+            global_repr += chat_str
+        return hash(global_repr)
+    
+    def save_csv(self, path):
+        if not path.endswith(".csv"):
+            path += ".csv"
+        pd = self.to_pandas()
+        pd.to_csv(path, index=False)
+    
     @staticmethod
     def from_pandas(df: pd.DataFrame) -> 'ChatDataset':
         chats = []
@@ -55,3 +68,5 @@ class ChatDataset:
     @staticmethod
     def from_csv(filename) -> 'ChatDataset':
         return ChatDataset.from_pandas(pd.read_csv(filename))
+
+    

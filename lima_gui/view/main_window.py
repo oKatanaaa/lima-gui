@@ -1,9 +1,12 @@
 from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QMainWindow, QTableWidgetItem, QFileDialog
+from loguru import logger
 
 from .ui_main_window import Ui_MainWindow
 from .openai_window import OpenaiWindow
+from lima_gui.logging import all_methods_logger
 
 
+@all_methods_logger
 class MainWindow(QMainWindow):
     def __init__ (self):
         super().__init__()
@@ -21,8 +24,10 @@ class MainWindow(QMainWindow):
             self.on_copy_chat_triggered)
         self.ui.tableWidget.itemDoubleClicked.connect(
             self.on_item_double_clicked)
-        self.ui.actionSave.triggered.connect(
-            self.on_save_triggered)
+        self.ui.actionSaveCurrent.triggered.connect(
+            self.on_save_current_triggered)
+        self.ui.actionSave_to.triggered.connect(
+            self.on_save_to_triggered)
         self.ui.actionOpen.triggered.connect(
             self.on_open_triggered)
         self.ui.actionOpenAI_API.triggered.connect(
@@ -31,8 +36,10 @@ class MainWindow(QMainWindow):
         self.chat_double_click_callback = None
         self.copy_chat_callback = None
         
-        self.save_callback = None
+        self.save_to_callback = None
+        self.save_current_callback = None
         self.open_callback = None
+        self.close_callback = None
         
     def set_column_names(self, names: list):
         self.ui.tableWidget.setColumnCount(len(names))
@@ -52,19 +59,28 @@ class MainWindow(QMainWindow):
     def set_chat_double_clicked_callback(self, callback):
         self.chat_double_click_callback = callback
     
-    def set_save_callback(self, callback):
-        self.save_callback = callback   
+    def set_save_current_callback(self, callback):
+        self.save_current_callback = callback
+    
+    def set_save_to_callback(self, callback):
+        self.save_to_callback = callback
         
     def set_open_callback(self, callback):
         self.open_callback = callback
         
     def set_settings_callback(self, callback):
         self.ui.actionSettings.triggered.connect(callback)
+    
+    def set_close_even_happened_callback(self, callback):
+        self.close_callback = callback
         
-    def on_save_triggered(self):
+    def on_save_current_triggered(self):
+        self.save_current_callback()
+        
+    def on_save_to_triggered(self):
         filename = QFileDialog.getSaveFileName(self, 'Save file', '', 'CSV (*.csv)')
         if filename[0]:
-            self.save_callback(filename[0])
+            self.save_to_callback(filename[0])
     
     def on_open_triggered(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '', 'CSV (*.csv)')
@@ -90,6 +106,14 @@ class MainWindow(QMainWindow):
         
         if self.chat_double_click_callback:
             self.chat_double_click_callback(row_id)
+    
+    def closeEvent(self, event):
+        logger.debug('Close event.')
+        if self.close_callback:
+            do_close = self.close_callback()
+            if not do_close:
+                event.ignore()
+                return
             
     def on_openai_api_triggered(self):
         self.openai_window.show()

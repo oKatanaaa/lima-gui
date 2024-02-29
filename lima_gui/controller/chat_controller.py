@@ -108,7 +108,7 @@ class ChatController:
         self.chat_window.set_tags(chat.tags)
         self.chat_window.set_msg_count(len(chat.chat['dialog']))
         self.chat_window.is_generate_allowed = self.openai_service.enabled
-        print('created chat controller, openai service enabled: ', self.openai_service.enabled)
+        logger.debug('Created chat controller, openai service enabled: ', self.openai_service.enabled)
 
         self.chat_window.set_add_msg_clicked_callback(self.on_add_msg_clicked)
         self.chat_window.set_delete_msg_clicked_callback(self.on_delete_msg_clicked)

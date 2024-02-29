@@ -34,7 +34,8 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
+    <addaction name="actionSaveCurrent"/>
+    <addaction name="actionSave_to"/>
    </widget>
    <widget class="QMenu" name="menuOpenAI_API">
     <property name="title">
@@ -81,19 +82,14 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionNew">
-   <property name="text">
-    <string>New</string>
-   </property>
-  </action>
   <action name="actionEdit_chat">
    <property name="text">
     <string>Edit chat</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="actionSaveCurrent">
    <property name="text">
-    <string>Save</string>
+    <string>Save current</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -115,6 +111,28 @@
   <action name="actionOpenAI_API">
    <property name="text">
     <string>OpenAI API</string>
+   </property>
+  </action>
+  <action name="actionSave_New">
+   <property name="text">
+    <string>Save New</string>
+   </property>
+   <property name="toolTip">
+    <string>Save new</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionSave_to">
+   <property name="text">
+    <string>Save to</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

@@ -167,8 +167,9 @@ If you experience any problem, please make a corresponding issue.
 
 - [ ] Safeguards not to lose data.
     - [ ] Automatic saving (optional).
-    - [ ] Asking to save if haven't already.
-    - [ ] Ctrl + S should save in an already opened file.
+    - [x] Asking to save if haven't already.
+    - [x] Ctrl + S should save in an already opened file.
+    - [x] Ctrl + Shift + S should save in a new file.
     - [ ] Show somewhere a little message "Saved".
 - [ ] Somehow refactor current shitty chat UI.
     - [x] Make scrolling smooth.
@@ -196,7 +197,7 @@ If you experience any problem, please make a corresponding issue.
 - [ ] Save settings/current config.
 - [ ] Import ChatGPT exported dialogues.
 - [ ] Stats board that shows various useful statistics about current data (token count distribution, number of samples by tags/languages).
-- [ ] Remove stupid prints and add proper logging.
+- [x] Remove stupid prints and add proper logging.
 - [ ] Explain tags.
 
 ## Pull requests

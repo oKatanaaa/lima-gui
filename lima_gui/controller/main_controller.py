@@ -1,6 +1,7 @@
 import pandas as pd
 from functools import partial
 from copy import deepcopy
+from PySide6.QtWidgets import QMessageBox, QFileDialog
 
 from lima_gui.logging import all_methods_logger
 from lima_gui.view.main_window import MainWindow
@@ -23,22 +24,39 @@ class Controller:
         self.main_window.set_add_chat_callback(self.on_add_chat_clicked)
         self.main_window.set_delete_chat_callback(self.on_delete_chat_clicked)
         self.main_window.set_chat_double_clicked_callback(self.on_chat_double_clicked)
-        self.main_window.set_save_callback(self.on_save_triggered)
+        self.main_window.set_save_to_callback(self.on_save_triggered)
+        self.main_window.set_save_current_callback(self.on_save_current_triggered)
         self.main_window.set_open_callback(self.on_open_triggered)
         self.main_window.set_settings_callback(self.on_settings_clicked)
         self.main_window.set_copy_chat_callback(self.on_copy_chat_clicked)
+        self.main_window.set_close_even_happened_callback(self.close_application)
         self.main_window.show()
         
         self.dataset = ChatDataset([])
+        self.last_dataset_hash = hash(self.dataset)
+        self.dataset_path = None
         
         self.chat_controllers = set()
     
     def on_save_triggered(self, filename):
-        pd = self.dataset.to_pandas()
-        pd.to_csv(filename, index=False)
+        self.dataset.save_csv(filename)
+        self.last_dataset_hash = hash(self.dataset)
+        self.dataset_path = filename
+    
+    def on_save_current_triggered(self):
+        if self.dataset_path is None:
+            filename = QFileDialog.getSaveFileName(None, 'Save file', '', 'CSV (*.csv)')
+            if filename[0]:
+                self.dataset_path = filename[0]
+            else:
+                return
+        self.dataset.save_csv(self.dataset_path)
+        self.last_dataset_hash = hash(self.dataset)
         
     def on_open_triggered(self, filename):
         self.dataset = ChatDataset.from_pandas(pd.read_csv(filename))
+        self.last_dataset_hash = hash(self.dataset)
+        self.dataset_path = filename
         self.update_table()
         
     def on_add_chat_clicked(self):
@@ -92,3 +110,11 @@ class Controller:
             chat = self.dataset.get_chat(i)
             self.main_window.add_chat_item([
                 chat.name, chat.language, len(chat)])
+
+    def close_application(self):
+        if self.last_dataset_hash != hash(self.dataset):
+            reply = QMessageBox.question(self.main_window, "Message",
+                                          "You have unsaved changes. Closing the app will lose them.",
+                                          QMessageBox.Discard | QMessageBox.Cancel)
+            return reply == QMessageBox.Discard
+        return True
