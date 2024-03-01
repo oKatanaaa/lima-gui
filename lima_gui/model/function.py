@@ -90,12 +90,12 @@ class Function:
         self.fn_dict["params"].pop(ind)
     
     def to_openai_dict(self):
-        out_dict = {
+        fn_dict = {
             "name": self.name,
             "description": self.description,
             "parameters": { "type": "object" }
         }
-        parameters = dict()
+        properties = dict()
         required_params = []
         for param in self.params:
             param_dict = dict()
@@ -107,14 +107,17 @@ class Function:
             if "enum" in param:
                 param_dict["enum"] = param["enum"]
                 
-            parameters[param["name"]] = param_dict
+            properties[param["name"]] = param_dict
             
             if param["required"]:
                 required_params.append(param["name"])
         
-        out_dict["parameters"]["properties"] = parameters
-        out_dict["required"] = required_params
-        return out_dict
+        fn_dict["parameters"]["properties"] = properties
+        fn_dict["required"] = required_params
+        return {
+            "type": "function",
+            "function": fn_dict
+        }
     
     def __str__(self) -> str:
         return str(self.to_openai_dict())

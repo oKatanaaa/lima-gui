@@ -103,7 +103,7 @@ LIMA-GUI also supports function calling API:
 The underlying data format is not fully compliant with what OpenAI API expects, but can be easily converted to one using `to_openai_dict` method in the `Function` class.
 
 Data format:
-- functions defined inside a conversation:
+- functions defined inside a conversation as:
 ```json
 {
     "name": "function_name",
@@ -204,3 +204,4 @@ If you experience any problem, please make a corresponding issue.
 ## Pull requests
 
 Any changes that simplify or make data gathering more comfortable (UI/UX, QoL, tools, etc) are welcome.
+Refactoring suggestions that simplfy/decouple/better structure the code are also welcome.

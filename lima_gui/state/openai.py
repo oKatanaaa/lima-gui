@@ -84,7 +84,7 @@ class OpenAIService:
             response = self.openai.chat.completions.create(
                 model=self.model,
                 messages=conversation,
-                functions=functions,
+                tools=functions,
                 temperature=self.temperature,
                 stream=True
             )
@@ -99,12 +99,14 @@ class OpenAIService:
             
         start_time = time.time()
         for chunk in response:
+            logger.debug('chunk ' + repr(chunk))
             delta_time = time.time() - start_time
             delta = chunk.choices[0].delta
             if delta.content is not None:
                 yield delta_time, delta.content
-            if delta.function_call is not None:
-                delta_dict = {'name': delta.function_call.name, 'arguments': delta.function_call.arguments}
+            if delta.tool_calls is not None:
+                fn_call = delta.tool_calls[0].function
+                delta_dict = {'name': fn_call.name, 'arguments': fn_call.arguments}
                 yield delta_time, delta_dict
             start_time = time.time()
     
