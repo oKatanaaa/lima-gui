@@ -55,7 +55,8 @@ class Function:
         assert Function.PARAM_ENUM in param_dict
         assert isinstance(param_dict[Function.PARAM_REQUIRED], bool)
         
-    def __init__(self, fn_dict):
+    def __init__(self, fn_dict: dict):
+        assert isinstance(fn_dict, dict)
         self.fn_dict = fn_dict
     
     @property

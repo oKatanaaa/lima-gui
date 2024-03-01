@@ -49,7 +49,6 @@ class ChatItemUpdater(QThread):
         time_past = 0.0
         for delta_time, chunk in self.openai_service.generate_response(
             self.conversation, context, self.functions):
-            print(chunk)
             if isinstance(chunk, str):
                 text += chunk
             elif isinstance(chunk, dict):
@@ -83,7 +82,7 @@ class ChatItemUpdater(QThread):
         }
         self.chat_item.set_function_call_data(function_data)
 
-       
+ 
 @all_methods_logger
 class ChatController:
     def __init__(self, chat_window: ChatWindow, chat: Chat):
@@ -98,15 +97,15 @@ class ChatController:
         self.chat_window.set_language(chat.language)
         self.chat_window.set_role_options(['system', 'user', 'assistant', 'function'], 'assistant')
         self.chat_window.set_functions(chat.functions)
-        for msg in chat.chat['dialog']:
+        for msg in chat.chat[Chat.KEY_MESSAGES]:
             role, content, fn_call_data = msg['role'], msg['content'], msg.get('function_call')
             self.chat_window.add_msg(role, content, fn_call_data)
 
-            
+
         self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
         self.chat_window.set_tag_options(self.settings.tags)
         self.chat_window.set_tags(chat.tags)
-        self.chat_window.set_msg_count(len(chat.chat['dialog']))
+        self.chat_window.set_msg_count(len(chat.chat[Chat.KEY_MESSAGES]))
         self.chat_window.is_generate_allowed = self.openai_service.enabled
         logger.debug('Created chat controller, openai service enabled: ', self.openai_service.enabled)
 
@@ -149,7 +148,7 @@ class ChatController:
         self.chat.add_msg(next_role, '')
         
         self.chat_window.add_msg(next_role, '')
-        self.chat_window.set_msg_count(len(self.chat.chat['dialog']))
+        self.chat_window.set_msg_count(len(self.chat.chat[Chat.KEY_MESSAGES]))
         
     def on_msg_changed(self, ind, role, content, fn_call_data):
         # Do not add fn_call_data if it is empty
@@ -161,7 +160,7 @@ class ChatController:
     
     def on_delete_msg_clicked(self, ind):
         self.chat.remove_msg(ind)
-        self.chat_window.set_msg_count(len(self.chat.chat['dialog']))
+        self.chat_window.set_msg_count(len(self.chat.chat[Chat.KEY_MESSAGES]))
 
     def on_name_changed(self, name):
         self.chat.name = name

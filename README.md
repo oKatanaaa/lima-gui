@@ -167,7 +167,8 @@ If you experience any problem, please make a corresponding issue.
 
 - [ ] Safeguards not to lose data.
     - [ ] Automatic saving (optional).
-    - [x] Asking to save if haven't already.
+    - [x] Asking to save if haven't already when closing app.
+    - [ ] Asking to save if opening a new file.
     - [x] Ctrl + S should save in an already opened file.
     - [x] Ctrl + Shift + S should save in a new file.
     - [ ] Show somewhere a little message "Saved".
@@ -180,7 +181,7 @@ If you experience any problem, please make a corresponding issue.
     - [ ] Automatically focus the item you are typing in.
 - [ ] Huggingface integration (download/upload the dataset).
 - [ ] Deletion of multiple messages.
-- [x] Token count using Huggingface tokenizers (LLAMA tokenizer by default).
+- [x] Token count using Huggingface tokenizers (Mistral tokenizer by default).
 - [ ] Manual on how to use lima-gui (!).
 - [x] Tags for chats (like coding, logic, qa, etc).
 - [x] Default dataset config (contains config for languages, tags and tokenizer).
@@ -195,11 +196,11 @@ If you experience any problem, please make a corresponding issue.
         - [ ] Data integrity when changing functions on the fly (!).
 - [x] Keep tabulation.
 - [ ] Save settings/current config.
-- [ ] Import ChatGPT exported dialogues.
 - [ ] Stats board that shows various useful statistics about current data (token count distribution, number of samples by tags/languages).
 - [x] Remove stupid prints and add proper logging.
 - [ ] Explain tags.
-- [ ] Save in OpenAI datasets format ('.json') (!).
+- [x] Save datasets in OpenAI format ('.jsonl').
+- [x] Load datasets in OpenAI format ('.jsonl').
 
 ## Pull requests
 

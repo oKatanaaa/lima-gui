@@ -32,13 +32,17 @@ class MainWindow(QMainWindow):
             self.on_open_triggered)
         self.ui.actionOpenAI_API.triggered.connect(
             self.on_openai_api_triggered)
+        self.ui.actionExport_as_OpenAI_dataset.triggered.connect(
+            self.on_export_as_openai_dataset_triggered)
         self.delete_chat_callback = None
         self.chat_double_click_callback = None
         self.copy_chat_callback = None
         
         self.save_to_callback = None
         self.save_current_callback = None
-        self.open_callback = None
+        self.export_as_openai_dataset_callback = None
+        self.post_open_callback = None
+        self.pre_open_callback = None
         self.close_callback = None
         
     def set_column_names(self, names: list):
@@ -65,27 +69,42 @@ class MainWindow(QMainWindow):
     def set_save_to_callback(self, callback):
         self.save_to_callback = callback
         
-    def set_open_callback(self, callback):
-        self.open_callback = callback
+    def set_pre_open_callback(self, callback):
+        self.pre_open_callback = callback
+        
+    def set_post_open_callback(self, callback):
+        self.post_open_callback = callback
         
     def set_settings_callback(self, callback):
         self.ui.actionSettings.triggered.connect(callback)
     
     def set_close_even_happened_callback(self, callback):
         self.close_callback = callback
+    
+    def set_export_as_openai_dataset_callback(self, callback):
+        self.export_as_openai_dataset_callback = callback
         
     def on_save_current_triggered(self):
         self.save_current_callback()
         
     def on_save_to_triggered(self):
-        filename = QFileDialog.getSaveFileName(self, 'Save file', '', 'CSV (*.csv)')
+        filename = QFileDialog.getSaveFileName(self, 'Save file', '', 'All Files (*)')
         if filename[0]:
             self.save_to_callback(filename[0])
+            
+    def on_export_as_openai_dataset_triggered(self):
+        filename = QFileDialog.getSaveFileName(self, 'Save file', '', 'All Files (*)')
+        if filename[0]:
+            self.export_as_openai_dataset_callback(filename[0])
     
     def on_open_triggered(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open file', '', 'CSV (*.csv)')
+        # Check if opening another file is allowed (e.g. current file is not saved yet)
+        if not self.pre_open_callback():
+            return
+        
+        filename = QFileDialog.getOpenFileName(self, 'Open file', '', 'All Files (*)')
         if filename[0]:
-            self.open_callback(filename[0])
+            self.post_open_callback(filename[0])
         
     def on_delete_chat_triggered(self):
         row_id = self.ui.tableWidget.currentRow()

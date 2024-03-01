@@ -36,6 +36,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSaveCurrent"/>
     <addaction name="actionSave_to"/>
+    <addaction name="actionExport_as_OpenAI_dataset"/>
    </widget>
    <widget class="QMenu" name="menuOpenAI_API">
     <property name="title">
@@ -133,6 +134,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionExport_as_OpenAI_dataset">
+   <property name="text">
+    <string>Export as OpenAI dataset</string>
    </property>
   </action>
  </widget>

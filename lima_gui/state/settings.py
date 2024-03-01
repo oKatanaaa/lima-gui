@@ -22,7 +22,7 @@ class Settings:
         'meta problems',
         'agent'
     ]
-    DEFAULT_TOKENIZER = 'OpenAssistant/llama2-13b-orca-8k-3319'
+    DEFAULT_TOKENIZER = 'mistralai/Mistral-7B-v0.1'
     
     @staticmethod
     def get_instance():
