@@ -2,12 +2,15 @@ from PySide6.QtGui import QKeyEvent, QTextCursor
 from PySide6.QtWidgets import QTextEdit, QWidget, QDialog
 from PySide6.QtCore import Qt
 from typing import List
+from loguru import logger
 
 from .ui_chat_item import Ui_ChatItem
 from .function_call_window import FunctionCallWindow
-from ..model.function import Function
+from ..model.function import Tool
+from lima_gui.logging import all_methods_logger
 
 
+@all_methods_logger
 class ChatItem(QWidget):
     def __init__(self, parent_item, parent=None):
         super().__init__(parent)
@@ -101,12 +104,11 @@ class ChatItem(QWidget):
             self.ui.comboBox.addItem(role)
         self.ui.comboBox.setCurrentIndex(0)
             
-    def set_functions(self, functions: List[Function], no_callback=True):
+    def set_functions(self, functions: List[Tool], no_callback=True):
         if no_callback:
             self.ui.fnNameComboBox.currentIndexChanged.disconnect()
         
         current_fn = self.ui.fnNameComboBox.currentText()
-        print('set_functions', current_fn)
         self.ui.fnNameComboBox.clear()
         self.ui.fnNameComboBox.addItem('none')
         for fn in functions:
@@ -146,26 +148,21 @@ class ChatItem(QWidget):
         self.ui.fnNameComboBox.currentIndexChanged.connect(self.on_content_changed)
     
     def set_function_call_data(self, function_call_data):
-        print('received fn_call_data', function_call_data)
         if function_call_data is None:
             function_call_data = {"name": None, "arguments": None}
             
         if function_call_data['name'] is not None:
             self.ui.fnNameComboBox.setCurrentText(function_call_data['name'])
-            print('set fn name')
         else:
             self.ui.fnNameComboBox.setCurrentIndex(0)
-            print('failed to set fn name')
         self.function_call_data = function_call_data
     
     def get_data(self):
         # Role, content
         return self.ui.comboBox.currentText(), self.ui.textEdit.toPlainText(), self.function_call_data
     
-    def on_content_changed(self):
-        print('content changed')
+    def on_content_changed(self, *args):
         current_fn = self.ui.fnNameComboBox.currentText()
-        print('current_fn', current_fn)
         self.function_call_data["name"] = current_fn if current_fn != 'none' else None
         self.update_height()
         self.update_background_color_by_role()
@@ -179,7 +176,7 @@ class ChatItem(QWidget):
         fn_name = self.ui.fnNameComboBox.currentText()
         fn = self.functions[fn_name]
         
-        fn_call_window = FunctionCallWindow(fn.params)
+        fn_call_window = FunctionCallWindow(fn.lima_compatible_params)
         if self.function_call_data is not None:
             fn_call_window.set_data(self.function_call_data["arguments"])
         result = fn_call_window.exec()
@@ -188,13 +185,12 @@ class ChatItem(QWidget):
             params = fn_call_window.get_data()
             self.function_call_data["arguments"] = params if len(params) > 0 else None
             self.on_content_changed()
-            print('showed fn call!')
 
     def update_height(self):
         size = self.ui.textEdit.document().size().toSize()
         self.ui.textEdit.setFixedHeight(size.height() + 5)
         self.setFixedHeight(size.height() + 20 + 50)
-        print('New height', size.height() + 20 + 50)
+        logger.debug(f"ChatItem updated height: {size.height()}")
 
     def sizeHint(self):
         print(super().sizeHint())
@@ -203,7 +199,6 @@ class ChatItem(QWidget):
     def update_background_color_by_role(self):
         role = self.ui.comboBox.currentText()
         if role not in self.role2color:
-            print(f'uknown role:d {role}')
             return
         self.ui.widget.setStyleSheet(f'background-color: {self.role2color[role]};')
         
@@ -222,4 +217,4 @@ class ChatItem(QWidget):
         elif role == 'user':
             config_ui(False, False)
         else:
-            print(f"Unknown role {role} is set. It may cause errors when using OpenAI API.")
+            logger.error(f"Unknown role {role} is set. It may cause errors when using OpenAI API.")

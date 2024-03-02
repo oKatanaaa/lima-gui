@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QTextEdit, QWidget
 from PySide6.QtWidgets import QApplication, QDialog, QLineEdit, QPushButton, QVBoxLayout
 
-from lima_gui.model.function import Function
+from lima_gui.model.function import Tool
 from .ui_fn_parameter_widget import Ui_fnParameter
 
 
@@ -50,12 +50,12 @@ class FnParameterWidget(QWidget):
         self.param_updated_callback = None
 
     def set_data(self, data):
-        self.ui.paramNameLineEdit.setText(data[Function.PARAM_NAME])
-        self.ui.paramTypeLineEdit.setText(data[Function.PARAM_TYPE])
-        self.ui.paramDescLineEdit.setText(data[Function.PARAM_DESCRIPTION])
-        self.ui.paramRequiredCheckBox.setChecked(data[Function.PARAM_REQUIRED])
+        self.ui.paramNameLineEdit.setText(data[Tool.PARAM_NAME])
+        self.ui.paramTypeLineEdit.setText(data[Tool.PARAM_TYPE])
+        self.ui.paramDescLineEdit.setText(data[Tool.PARAM_DESCRIPTION])
+        self.ui.paramRequiredCheckBox.setChecked(data[Tool.PARAM_REQUIRED])
         self.ui.paramEnumListWidget.clear()
-        self.ui.paramEnumListWidget.addItems(data[Function.PARAM_ENUM])
+        self.ui.paramEnumListWidget.addItems(data[Tool.PARAM_ENUM])
     
     def get_data(self):
         name = self.ui.paramNameLineEdit.text()
@@ -64,11 +64,11 @@ class FnParameterWidget(QWidget):
         required = self.ui.paramRequiredCheckBox.isChecked()
         enums = [self.ui.paramEnumListWidget.item(i).text() for i in range(self.ui.paramEnumListWidget.count())]
         return {
-            Function.PARAM_NAME: name,
-            Function.PARAM_TYPE: type,
-            Function.PARAM_DESCRIPTION: desc,
-            Function.PARAM_REQUIRED: required,
-            Function.PARAM_ENUM: enums
+            Tool.PARAM_NAME: name,
+            Tool.PARAM_TYPE: type,
+            Tool.PARAM_DESCRIPTION: desc,
+            Tool.PARAM_REQUIRED: required,
+            Tool.PARAM_ENUM: enums
         }
     
     def set_param_updated_callback(self, callback):

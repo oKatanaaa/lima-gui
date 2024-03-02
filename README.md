@@ -1,8 +1,8 @@
 # LIMA-GUI
 
-LIMA-GUI is a simple utility for gathering [LIMA](https://arxiv.org/pdf/2305.11206.pdf)-like data to train you own personal AI (based on LLAMA, MPT or others).
+LIMA-GUI is a simple utility for gathering [LIMA](https://arxiv.org/pdf/2305.11206.pdf)-like data (of extremely high quality) to train you own personal AI (based on LLAMA, Mistral or others).
 
-It uses a simple data format that closely resembles OpenAI API. Chat is represented as a list of JSONs:
+It uses a simple data format that's fully compliant with OpenAI API and natively supported by Huggingface trainers. Chat is represented as a list of JSONs:
 ```json
 [
     {
@@ -55,9 +55,9 @@ LIMA-GUI allows you to manage manually curated (basically hand written) chat dat
 ![Main window](examples/images/main_window.png)
 
 I guess the UI here is mostly self-explanatory, though here is an explicit list of things you can see/do:
-- A list of chats.
+- In the main window there is a list of chats.
 - You can add, delete, copy chats.
-- In the file menu you'll see `Open` and `Save` options.
+- In the file menu you'll see `Open`, `Save current`, `Save to` and `Export as OpenAI dataset` options. The former 3 are self-explanatory. `Export as OpenAI dataset` exports your dataset in OpenAI finetuning API compliant format (`jsonl` with a lot of `{"messages": [...]}). This way you can directly feed the exported data in the finetuning API or use it with huggingface trainer (I believe it supports this format by default).
 - In the settings menu you can tweak some of the app settings as well as OpenAI API configuration.
 
 Double-clicking on a chat opens a chat window:
@@ -72,7 +72,7 @@ Chat is represented as a list of messages and can be seen on the left. Each mess
 On the right you can see some of the chat's properties:
 - `Name` - a short description of the chat.
 - `Language` - primary language in the chat (currently ru and en are supported, I'll make it configurable later).
-- `Tokens` - approximate number of tokens in the chat. It is being computed using a huggingface tokenizer that's set in the settings menu ('llama-2-7b' tokenizer is used by default). I need my AI to operate with long contexts, so this stat is really helpful for me.
+- `Tokens` - approximate number of tokens in the chat. It is being computed using a huggingface tokenizer that's set in the settings menu ('Mistral-7b' tokenizer is used by default). I need my AI to operate with long contexts, so this stat is really helpful for me.
 - `Msg count` - number of messages in the chat.
 - `Tags` - well, it's a list of tags for the chat. It helps to classify individual chats and split the dataset appropriately if needed.
 
@@ -84,11 +84,13 @@ The coolest thing is that while crafting your own data, you can use OpenAI's mod
 
 Other important things:
 - Shortcut for saving current dataset: `Ctrl + S`.
+- Shortcut for saving current dataset in a new file: `Ctrl + Shift + S`.
 - Shortcut for opening a dataset file: `Ctrl + R`.
-- You can replace the API base for the OpenAI API. Meaning you can host you own model to help you in your endeavors (I haven't tested it yet though, but it should work). The only requirement is that the hosting framework of your choice should mimic OpenAI API format. I am using [SimpleAI](https://github.com/lhenault/simpleAI) and it works great for me.
-- See the jupyter notebook (`data_loading.ipynb`) in the examples folder for a small showcase of how you can load your data at the moment.
+- You can replace the API base for the OpenAI API. Meaning you can host you own model to help you in your endeavors (I haven't tested it yet though, but it should work). The only requirement is that the hosting framework of your choice should mimic OpenAI API format. I am using [SimpleAI](https://github.com/lhenault/simpleAI)/[vllm](https://github.com/vllm-project/vllm) and it works great for me.
+- You can open datasets that are OpenAI finetuning API compliant (`jsonl` with a lot of `{"messages": [...]}). All chats will have the same titles (I plan on adding some algo to generate meaningful titles) and other metadata will be absent, but you can add it if needed. Other than that, you can work with the data as usual.
+- When using `completions API`, LIMA-GUI formats the chat data in `ChatML` format. Beware of that when using custom models.
 
-### Function calling
+### Function calling / Tools
 > [!WARNING] 
 > This functionality is experimental at the moment and you may encounter data corrupting bugs.
 > Make sure you have a running copy of your data before using this functionality.
@@ -98,29 +100,42 @@ LIMA-GUI also supports function calling API:
 - Assistant messages may contain function calls.
 - Function calling is integrated with OpenAI API so the calls may be generated automatically.
 
-![Function calling](examples/images/chat_fncalling.gif)
+> [!NOTE]
+> LIMA-GUI does not execute the functions, it only holds their corresponsing representations.
+> You'll have to manually execute requests and pass into the chat their execution results.
 
-The underlying data format is not fully compliant with what OpenAI API expects, but can be easily converted to one using `to_openai_dict` method in the `Function` class.
+![Function calling/Tools](examples/images/chat_fncalling.gif)
 
 Data format:
-- functions defined inside a conversation:
+- functions defined inside a conversation as:
 ```json
 {
-    "name": "function_name",
-    "description": "function_description (optional)",
-    "params": [
-        {
-            "name": "arg1_name",
-            "description": "param_description (optional)",
-            "type": "param_type (int, string, etc)",
-            "required": false,
-            "enum": ["val1", "val2"]
+    "type": "function",
+    "function": {
+        "name": "my_function",
+        "description": "My function",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "param1": {
+                    "type": "string",
+                    "description": "First parameter"
+                },
+                "param2": {
+                    "type": "string",
+                    "enum": ["value1", "value2"]
+                }
+            },
+            "required": ["param1"]
         }
-    ]
+    }
 }
 ```
 > [!NOTE]
 > `description` and `enum` fields can be skipped.
+
+> [!NOTE]
+> **Functions'** underlying data format is (supposedly) fully compliant with OpenAI API and can be used *as is*. 
 - messages
 ```json
 [
@@ -149,11 +164,10 @@ See `examples` folder for a sample of chats with function calling.
 
 ## Caution
 
-The project is still in its early stages, so expect a few bumps along the road. For instance, you'll need to manually save your data (Ctrl + S) to avoid losing changes. The program won't prompt you to save when exiting. Nevertheless, I've found the current feature set to be super handy (at least for my needs).
+> [!NOTE]
+> This section used to be longer!
 
-I'm still busy gathering data and haven't dived into training models yet. This means the API for loading data might be a tad clunky for now. However, the underlying data format is pretty straightforward, so if needed you can make up your own data parser in minutes.
-
-On the horizon: I'm looking to integrate Huggingface with LIMA-GUI. Specifically, I want to create a custom data loader that plays nice with HF data APIs.
+The project is still in its early stages, so expect a few bumps along the road. Despite how yong the project is, I've found current feature set to be super handy (at least for my needs).
 
 ## Usage
 
@@ -167,8 +181,10 @@ If you experience any problem, please make a corresponding issue.
 
 - [ ] Safeguards not to lose data.
     - [ ] Automatic saving (optional).
-    - [ ] Asking to save if haven't already.
-    - [ ] Ctrl + S should save in an already opened file.
+    - [x] Asking to save if haven't already when closing app.
+    - [x] Asking to save if opening a new file.
+    - [x] Ctrl + S should save in an already opened file.
+    - [x] Ctrl + Shift + S should save in a new file.
     - [ ] Show somewhere a little message "Saved".
 - [ ] Somehow refactor current shitty chat UI.
     - [x] Make scrolling smooth.
@@ -179,7 +195,7 @@ If you experience any problem, please make a corresponding issue.
     - [ ] Automatically focus the item you are typing in.
 - [ ] Huggingface integration (download/upload the dataset).
 - [ ] Deletion of multiple messages.
-- [x] Token count using Huggingface tokenizers (LLAMA tokenizer by default).
+- [x] Token count using Huggingface tokenizers (Mistral tokenizer by default).
 - [ ] Manual on how to use lima-gui (!).
 - [x] Tags for chats (like coding, logic, qa, etc).
 - [x] Default dataset config (contains config for languages, tags and tokenizer).
@@ -194,11 +210,13 @@ If you experience any problem, please make a corresponding issue.
         - [ ] Data integrity when changing functions on the fly (!).
 - [x] Keep tabulation.
 - [ ] Save settings/current config.
-- [ ] Import ChatGPT exported dialogues.
 - [ ] Stats board that shows various useful statistics about current data (token count distribution, number of samples by tags/languages).
-- [ ] Remove stupid prints and add proper logging.
+- [x] Remove stupid prints and add proper logging.
 - [ ] Explain tags.
+- [x] Save datasets in OpenAI format ('.jsonl').
+- [x] Load datasets in OpenAI format ('.jsonl').
 
 ## Pull requests
 
 Any changes that simplify or make data gathering more comfortable (UI/UX, QoL, tools, etc) are welcome.
+Refactoring suggestions that simplfy/decouple/better structure the code are also welcome.

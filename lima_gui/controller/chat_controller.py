@@ -1,17 +1,18 @@
 from PySide6.QtCore import QThread, Qt, Signal
 from PySide6.QtCore import QTimer
-import time
+from loguru import logger
 from functools import partial
 import json
 from typing import Optional
 
+from lima_gui.logging import all_methods_logger
 from lima_gui.view.chat_window import ChatWindow
 from lima_gui.view.chat_item import ChatItem
-from lima_gui.view.function_desc_window import FunctionDescriptionWindow
-from lima_gui.model.chat import Chat, Function
+from lima_gui.view.function_desc_window import ToolDescriptionWindow
+from lima_gui.model.chat import Chat, Tool
 from lima_gui.state.settings import Settings
 from lima_gui.state.openai import OpenAIService
-from lima_gui.controller.function_desc_controller import FunctionDescController
+from lima_gui.controller.function_desc_controller import ToolDescController
 
 
 class ChatItemUpdater(QThread):
@@ -48,11 +49,10 @@ class ChatItemUpdater(QThread):
         time_past = 0.0
         for delta_time, chunk in self.openai_service.generate_response(
             self.conversation, context, self.functions):
-            print(chunk)
             if isinstance(chunk, str):
                 text += chunk
             elif isinstance(chunk, dict):
-                if 'name' in chunk:
+                if 'name' in chunk and chunk['name'] is not None:
                     function_name = chunk['name']
                 if 'arguments' in chunk:
                     arguments += chunk['arguments']
@@ -67,7 +67,7 @@ class ChatItemUpdater(QThread):
     def update_text(self, text, function_name, arguments):
         function_data = None
         if function_name:
-            print('arguments', arguments)
+            logger.debug('arguments', arguments)
             function_data = {
                 'name': function_name,
                 'arguments': json.loads(arguments)
@@ -75,17 +75,17 @@ class ChatItemUpdater(QThread):
         self.chat_item.set_data(self.assistant_role, text, function_call_data=function_data, no_callback=False)
         
     def update_function_call(self, function_name, arguments):
-        print('setting function call data')
+        logger.debug('setting function call data')
         function_data = {
             'name': function_name,
             'arguments': json.loads(arguments)
         }
         self.chat_item.set_function_call_data(function_data)
-        
 
+ 
+@all_methods_logger
 class ChatController:
     def __init__(self, chat_window: ChatWindow, chat: Chat):
-        print('created chat controller')
         self.chat_window = chat_window
         self.chat = chat
         
@@ -96,18 +96,18 @@ class ChatController:
         self.chat_window.set_language_options(self.settings.languages)
         self.chat_window.set_language(chat.language)
         self.chat_window.set_role_options(['system', 'user', 'assistant', 'function'], 'assistant')
-        self.chat_window.set_functions(chat.functions)
-        for msg in chat.chat['dialog']:
+        self.chat_window.set_functions(chat.tools)
+        for msg in chat.chat[Chat.KEY_MESSAGES]:
             role, content, fn_call_data = msg['role'], msg['content'], msg.get('function_call')
             self.chat_window.add_msg(role, content, fn_call_data)
 
-            
+
         self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
         self.chat_window.set_tag_options(self.settings.tags)
         self.chat_window.set_tags(chat.tags)
-        self.chat_window.set_msg_count(len(chat.chat['dialog']))
+        self.chat_window.set_msg_count(len(chat.chat[Chat.KEY_MESSAGES]))
         self.chat_window.is_generate_allowed = self.openai_service.enabled
-        print('created chat controller, openai service enabled: ', self.openai_service.enabled)
+        logger.debug('Created chat controller, openai service enabled: ', self.openai_service.enabled)
 
         self.chat_window.set_add_msg_clicked_callback(self.on_add_msg_clicked)
         self.chat_window.set_delete_msg_clicked_callback(self.on_delete_msg_clicked)
@@ -129,7 +129,6 @@ class ChatController:
         self.chat_item_updater = None
     
     def on_add_msg_clicked(self):
-        print('add msg clicked')
         last_role = self.chat.last_role
         last_msg = self.chat.last_msg
         if last_role == 'system':
@@ -149,12 +148,9 @@ class ChatController:
         self.chat.add_msg(next_role, '')
         
         self.chat_window.add_msg(next_role, '')
-        self.chat_window.set_msg_count(len(self.chat.chat['dialog']))
+        self.chat_window.set_msg_count(len(self.chat.chat[Chat.KEY_MESSAGES]))
         
     def on_msg_changed(self, ind, role, content, fn_call_data):
-        print('msg changed')
-        print(fn_call_data)
-        
         # Do not add fn_call_data if it is empty
         if fn_call_data['name'] is None:
             fn_call_data = None
@@ -163,78 +159,67 @@ class ChatController:
         self.chat_window.set_token_count(self.settings.get_token_count(self.chat.to_str()))
     
     def on_delete_msg_clicked(self, ind):
-        print('delete msg clicked')
         self.chat.remove_msg(ind)
-        self.chat_window.set_msg_count(len(self.chat.chat['dialog']))
+        self.chat_window.set_msg_count(len(self.chat.chat[Chat.KEY_MESSAGES]))
 
     def on_name_changed(self, name):
-        print('name changed')
         self.chat.name = name
     
     def on_language_changed(self, lang):
-        print('language changed')
         self.chat.language = lang
         
     def on_tag_added(self, tag):
-        print('tag added')
         self.chat.add_tag(tag)
         
     def on_tag_deleted(self, tag):
-        print('tag deleted')
         self.chat.remove_tag(tag)
         
     def on_generate_clicked(self, ind, chat_item):
-        print('generate clicked')
         conversation = self.chat.get_conversation_history(ind)
         self.chat_item_updater = ChatItemUpdater(
             chat_item=chat_item,
             conversation=conversation,
             assistant_role='assistant',
-            functions=self.chat.functions
+            functions=self.chat.tools
         )
         self.chat_item_updater.start()
         
     def on_function_add_clicked(self):
-        function = Function.create_empty('new_function')
-        fn_window = FunctionDescriptionWindow()
-        fn_controller = FunctionDescController(fn_window, function)
-        fn_controller.save_function_callback = self.on_function_created
+        function = Tool.create_empty('new_function')
+        fn_window = ToolDescriptionWindow()
+        tool_controller = ToolDescController(fn_window, function)
+        tool_controller.save_tool_callback = self.on_function_created
         
-        self.fn_window = fn_window
-        self.fn_controller = fn_controller
+        self.tool_window = fn_window
+        self.tool_controller = tool_controller
         fn_window.show()
     
-    def on_function_created(self, function: Function):
-        print('function created')
-        print(function)
+    def on_function_created(self, function: Tool):
         self.chat.add_fn(function)
-        self.chat_window.set_functions(self.chat.functions)
-        self.fn_window.close()
-        self.fn_controller = None
-        self.fn_window = None
+        self.chat_window.set_functions(self.chat.tools)
+        self.tool_window.close()
+        self.tool_controller = None
+        self.tool_window = None
     
     def on_function_delete_clicked(self, ind):
         self.chat.remove_fn(ind)
-        self.chat_window.set_functions(self.chat.functions)
+        self.chat_window.set_functions(self.chat.tools)
         
     def on_function_double_clicked(self, ind):
         function = self.chat.get_fn(ind)
-        print('fn double clicked, name', function.name)
         
-        fn_window = FunctionDescriptionWindow()
-        fn_controller = FunctionDescController(fn_window, function)
-        fn_controller.save_function_callback = partial(self.on_function_updated, ind)
+        fn_window = ToolDescriptionWindow()
+        fn_controller = ToolDescController(fn_window, function)
+        fn_controller.save_tool_callback = partial(self.on_function_updated, ind)
         
-        self.fn_window = fn_window
-        self.fn_controller = fn_controller
+        self.tool_window = fn_window
+        self.tool_controller = fn_controller
         fn_window.show()
 
     def on_function_updated(self, ind, function):
-        print('fn updated, name', function.name)
-        print(function)
         self.chat.edit_fn(ind, function)
-        self.fn_window.close()
-        self.fn_controller = None
-        self.fn_window = None
+        self.tool_window.close()
+        self.tool_controller = None
+        self.tool_window = None
         
-        self.chat_window.set_functions(self.chat.functions)
+        self.chat_window.set_functions(self.chat.tools)

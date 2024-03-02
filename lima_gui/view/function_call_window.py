@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QScrollArea, QDialog, QPushButton
 from PySide6.QtCore import Qt
 from .parameter_item import ParameterItem
-from ..model.function import Function
+from ..model.function import Tool
 
 
 class FunctionCallWindow(QDialog):
