@@ -3,7 +3,7 @@ import pandas as pd
 from typing import List, Dict, Any, Union
 
 from .chat import Chat
-from .function import Function
+from .function import Tool
 
 
 class ChatDataset:

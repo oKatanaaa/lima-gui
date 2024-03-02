@@ -6,7 +6,7 @@ from loguru import logger
 from lima_gui.logging import all_methods_logger
 from .ui_chat_widget import Ui_ChatWidget
 from .chat_item import ChatItem
-from ..model.function import Function
+from ..model.function import Tool
 
 
 @all_methods_logger
@@ -89,7 +89,7 @@ class ChatWindow(QMainWindow):
         
         self.ui.listWidget.scrollToBottom()
         
-    def set_functions(self, functions: List[dict]):
+    def set_functions(self, functions: List[Tool]):
         self.ui.fnListWidget.clear()
         for fn in functions:
             self.ui.fnListWidget.addItem(fn.name)

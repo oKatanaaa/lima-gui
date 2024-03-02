@@ -8,11 +8,11 @@ from typing import Optional
 from lima_gui.logging import all_methods_logger
 from lima_gui.view.chat_window import ChatWindow
 from lima_gui.view.chat_item import ChatItem
-from lima_gui.view.function_desc_window import FunctionDescriptionWindow
-from lima_gui.model.chat import Chat, Function
+from lima_gui.view.function_desc_window import ToolDescriptionWindow
+from lima_gui.model.chat import Chat, Tool
 from lima_gui.state.settings import Settings
 from lima_gui.state.openai import OpenAIService
-from lima_gui.controller.function_desc_controller import FunctionDescController
+from lima_gui.controller.function_desc_controller import ToolDescController
 
 
 class ChatItemUpdater(QThread):
@@ -96,7 +96,7 @@ class ChatController:
         self.chat_window.set_language_options(self.settings.languages)
         self.chat_window.set_language(chat.language)
         self.chat_window.set_role_options(['system', 'user', 'assistant', 'function'], 'assistant')
-        self.chat_window.set_functions(chat.functions)
+        self.chat_window.set_functions(chat.tools)
         for msg in chat.chat[Chat.KEY_MESSAGES]:
             role, content, fn_call_data = msg['role'], msg['content'], msg.get('function_call')
             self.chat_window.add_msg(role, content, fn_call_data)
@@ -180,46 +180,46 @@ class ChatController:
             chat_item=chat_item,
             conversation=conversation,
             assistant_role='assistant',
-            functions=self.chat.functions
+            functions=self.chat.tools
         )
         self.chat_item_updater.start()
         
     def on_function_add_clicked(self):
-        function = Function.create_empty('new_function')
-        fn_window = FunctionDescriptionWindow()
-        fn_controller = FunctionDescController(fn_window, function)
-        fn_controller.save_function_callback = self.on_function_created
+        function = Tool.create_empty('new_function')
+        fn_window = ToolDescriptionWindow()
+        tool_controller = ToolDescController(fn_window, function)
+        tool_controller.save_tool_callback = self.on_function_created
         
-        self.fn_window = fn_window
-        self.fn_controller = fn_controller
+        self.tool_window = fn_window
+        self.tool_controller = tool_controller
         fn_window.show()
     
-    def on_function_created(self, function: Function):
+    def on_function_created(self, function: Tool):
         self.chat.add_fn(function)
-        self.chat_window.set_functions(self.chat.functions)
-        self.fn_window.close()
-        self.fn_controller = None
-        self.fn_window = None
+        self.chat_window.set_functions(self.chat.tools)
+        self.tool_window.close()
+        self.tool_controller = None
+        self.tool_window = None
     
     def on_function_delete_clicked(self, ind):
         self.chat.remove_fn(ind)
-        self.chat_window.set_functions(self.chat.functions)
+        self.chat_window.set_functions(self.chat.tools)
         
     def on_function_double_clicked(self, ind):
         function = self.chat.get_fn(ind)
         
-        fn_window = FunctionDescriptionWindow()
-        fn_controller = FunctionDescController(fn_window, function)
-        fn_controller.save_function_callback = partial(self.on_function_updated, ind)
+        fn_window = ToolDescriptionWindow()
+        fn_controller = ToolDescController(fn_window, function)
+        fn_controller.save_tool_callback = partial(self.on_function_updated, ind)
         
-        self.fn_window = fn_window
-        self.fn_controller = fn_controller
+        self.tool_window = fn_window
+        self.tool_controller = fn_controller
         fn_window.show()
 
     def on_function_updated(self, ind, function):
         self.chat.edit_fn(ind, function)
-        self.fn_window.close()
-        self.fn_controller = None
-        self.fn_window = None
+        self.tool_window.close()
+        self.tool_controller = None
+        self.tool_window = None
         
-        self.chat_window.set_functions(self.chat.functions)
+        self.chat_window.set_functions(self.chat.tools)

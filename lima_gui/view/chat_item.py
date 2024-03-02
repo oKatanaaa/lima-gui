@@ -6,7 +6,7 @@ from loguru import logger
 
 from .ui_chat_item import Ui_ChatItem
 from .function_call_window import FunctionCallWindow
-from ..model.function import Function
+from ..model.function import Tool
 from lima_gui.logging import all_methods_logger
 
 
@@ -104,7 +104,7 @@ class ChatItem(QWidget):
             self.ui.comboBox.addItem(role)
         self.ui.comboBox.setCurrentIndex(0)
             
-    def set_functions(self, functions: List[Function], no_callback=True):
+    def set_functions(self, functions: List[Tool], no_callback=True):
         if no_callback:
             self.ui.fnNameComboBox.currentIndexChanged.disconnect()
         
@@ -176,7 +176,7 @@ class ChatItem(QWidget):
         fn_name = self.ui.fnNameComboBox.currentText()
         fn = self.functions[fn_name]
         
-        fn_call_window = FunctionCallWindow(fn.params)
+        fn_call_window = FunctionCallWindow(fn.lima_compatible_params)
         if self.function_call_data is not None:
             fn_call_window.set_data(self.function_call_data["arguments"])
         result = fn_call_window.exec()

@@ -57,7 +57,7 @@ class Controller:
                 self.dataset_path = filename[0]
             else:
                 return
-        if filename.endswith('.csv'):
+        if self.dataset_path.endswith('.csv'):
             self.dataset.save_csv(self.dataset_path)
         else:
             self.dataset.save_jsonl(self.dataset_path)

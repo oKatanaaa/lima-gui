@@ -4,9 +4,9 @@ from .ui_function_description import Ui_FunctionDescription
 from .fn_parameter_widget import FnParameterWidget
 
 
-class FunctionDescriptionWindow(QWidget):
+class ToolDescriptionWindow(QWidget):
     def __init__(self, parent=None):
-        super(FunctionDescriptionWindow, self).__init__(parent)
+        super(ToolDescriptionWindow, self).__init__(parent)
         self.ui = Ui_FunctionDescription()
         self.ui.setupUi(self)
         
@@ -17,7 +17,15 @@ class FunctionDescriptionWindow(QWidget):
         self.name_changed_callback = None
         self.description_changed_callback = None
         self.param_updated_callback = None
-        self.save_function_callback = None
+        self.save_tool_callback = None
+        
+        # Using this variable avoids adding two duplicate functions.
+        # Because functions are added when:
+        # 1. save is clicked
+        # 2. the window is closed
+        # In the case of 1 we first call the save callback.
+        # The the window is closed and the save callback is called again.
+        self._save_tool_clicked = False
         
     def set_name(self, name):
         self.ui.fnNameTextEdit.setText(name)
@@ -38,10 +46,10 @@ class FunctionDescriptionWindow(QWidget):
         self.ui.parametersListWidget.setItemWidget(item, param_item)
         
         self.ui.parametersListWidget.scrollToBottom()
-    
+            
     def set_save_function_callback(self, callback):
-        self.ui.fnSaveBtn.clicked.connect(callback)
-        self.save_function_callback = callback
+        self.ui.fnSaveBtn.clicked.connect(self._on_save_tool_clicked)
+        self.save_tool_callback = callback
         
     def set_name_changed_callback(self, callback):
         self.name_changed_callback = callback
@@ -57,6 +65,13 @@ class FunctionDescriptionWindow(QWidget):
         
     def set_param_updated_callback(self, callback):
         self.param_updated_callback = callback
+        
+    def set_close_window_callback(self, callback):
+        self.save_tool_callback = callback
+        
+    def _on_save_tool_clicked(self):
+        self._save_tool_clicked = True
+        self.save_tool_callback()
         
     def on_name_changed(self):
         if self.name_changed_callback:
@@ -80,12 +95,14 @@ class FunctionDescriptionWindow(QWidget):
     def on_delete_param_clicked(self):
         row_id = self.ui.parametersListWidget.currentRow()
         
-        self.ui.parametersListWidget.takeItem(row_id)
+        param_item = self.ui.parametersListWidget.takeItem(row_id)
+        param_item: FnParameterWidget = self.ui.parametersListWidget.itemWidget(param_item)
+        param_data = param_item.get_data()
         
         if self.delete_param_clicked_callback:
-            self.delete_param_clicked_callback(row_id)
+            self.delete_param_clicked_callback(row_id, param_data)
             
     def closeEvent(self, event):
+        if self.save_tool_callback and not self._save_tool_clicked:
+            self.save_tool_callback()
         event.accept()
-        # if self.save_function_callback:
-        #     self.save_function_callback()

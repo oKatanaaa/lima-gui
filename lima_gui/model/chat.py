@@ -2,7 +2,7 @@ from copy import deepcopy
 import json
 from typing import List
 
-from .function import Function
+from .function import Tool
 from .role import Role
 
 
@@ -80,10 +80,10 @@ class Chat:
         return self.chat[Chat.KEY_TAGS]
     
     @property
-    def functions(self) -> List[Function]:
+    def tools(self) -> List[Tool]:
         out = []
         for fn_dict in self.chat[Chat.KEY_TOOLS]:
-            out.append(Function(deepcopy(fn_dict)))
+            out.append(Tool(deepcopy(fn_dict)))
         return out
         
     def __len__(self):
@@ -109,17 +109,17 @@ class Chat:
     def remove_msg(self, ind):
         self.chat[Chat.KEY_MESSAGES].pop(ind)
         
-    def add_fn(self, fn_obj: Function):
-        self.chat[Chat.KEY_TOOLS].append(fn_obj.fn_dict)
+    def add_fn(self, fn_obj: Tool):
+        self.chat[Chat.KEY_TOOLS].append(fn_obj._main_dict)
     
-    def edit_fn(self, ind, fn_obj: Function):
-        self.chat[Chat.KEY_TOOLS][ind] = fn_obj.fn_dict
+    def edit_fn(self, ind, fn_obj: Tool):
+        self.chat[Chat.KEY_TOOLS][ind] = fn_obj._main_dict
     
     def remove_fn(self, ind):
         self.chat[Chat.KEY_TOOLS].pop(ind)
         
     def get_fn(self, ind):
-        return Function(deepcopy(self.chat[Chat.KEY_TOOLS][ind]))
+        return Tool(deepcopy(self.chat[Chat.KEY_TOOLS][ind]))
         
     def add_tag(self, tag):
         if tag not in self.chat[Chat.KEY_TAGS]:
@@ -135,7 +135,7 @@ class Chat:
         output_str = ""
         if len(self.chat[Chat.KEY_TOOLS]) > 0:
             output_str += "Functions:\n"
-            for fn in self.functions:
+            for fn in self.tools:
                 output_str += f"{json.dumps(fn.to_openai_dict())}\n"
                 
         for msg in self.chat[Chat.KEY_MESSAGES]:
@@ -147,9 +147,9 @@ class Chat:
     
     def to_openai_dict(self):
         d = {'messages': self.chat[Chat.KEY_MESSAGES]}
-        if len(self.functions) > 0:
+        if len(self.tools) > 0:
             functions = []
-            for fn in self.functions:
+            for fn in self.tools:
                 functions.append(fn.to_openai_dict())
             d['tools'] = functions
         return d

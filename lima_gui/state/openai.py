@@ -4,7 +4,7 @@ from typing import List, Optional
 import json
 from loguru import logger
 
-from ..model.function import Function
+from ..model.function import Tool
 from lima_gui.logging import all_methods_logger
 
 OPEN_AI_DEFAULT_API_BASE = base_url
@@ -64,7 +64,7 @@ class OpenAIService:
     def openai(self):
         return OpenAI(api_key=self.api_key, base_url=self.api_base)
 
-    def generate_response(self, conversation, context=None, functions: Optional[List[Function]] = None):
+    def generate_response(self, conversation, context=None, functions: Optional[List[Tool]] = None):
         if self.api_type == OpenAIService.API_TYPE_CHAT:
             return self._chat_response(conversation, functions)
         elif self.api_type == OpenAIService.API_TYPE_COMPLETION:
@@ -73,7 +73,7 @@ class OpenAIService:
             logger.exception('Invalid API type.', api_type=self.api_type)
             raise Exception('Invalid API type.')
             
-    def _chat_response(self, conversation, functions: Optional[List[Function]] = None):
+    def _chat_response(self, conversation, functions: Optional[List[Tool]] = None):
         for msg in conversation:
             if 'function_call' in msg and 'arguments' in msg['function_call']:
                 msg['function_call']['arguments'] = json.dumps(msg['function_call']['arguments'])
