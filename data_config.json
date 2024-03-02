@@ -16,5 +16,5 @@
 		"conversational",
 		"agent"
 	],
-	"tokenizer": "OpenAssistant/llama2-13b-orca-8k-3319"
+	"tokenizer": "mistralai/Mistral-7B-v0.1"
 }
