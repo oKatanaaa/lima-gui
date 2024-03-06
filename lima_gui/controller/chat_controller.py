@@ -18,6 +18,7 @@ from lima_gui.controller.function_desc_controller import ToolDescController
 class ChatItemUpdater(QThread):
     update_period_sec = 0.25
     update_signal = Signal(str, object, object)
+    finished_run_signal = Signal()
     
     def __init__(self, chat_item: ChatItem, conversation, assistant_role, functions=[]):
         super().__init__()
@@ -26,8 +27,8 @@ class ChatItemUpdater(QThread):
         self.conversation = conversation
         self.assistant_role = assistant_role
         self.functions = functions if len(functions) > 0 else None
-        self.update_signal.connect(self.update_text)
-    
+        # self.update_signal.connect(self.update_text, Qt.QueuedConnection)
+
     def run(self):
         context = self.chat_item.get_cursor_context()
         before, after = context
@@ -60,27 +61,19 @@ class ChatItemUpdater(QThread):
             if time_past > self.update_period_sec:
                 self.update_signal.emit(text_postprocessor(text, function_name, arguments), None, None)
                 time_past = 0.0
+                
         self.update_signal.emit(text_postprocessor(text, None, None), function_name, arguments)
-        # if function_name:
-        #     self.update_function_call(function_name, arguments)
+        self.finished_run_signal.emit()
 
-    def update_text(self, text, function_name, arguments):
-        function_data = None
-        if function_name:
-            logger.debug('arguments', arguments)
-            function_data = {
-                'name': function_name,
-                'arguments': json.loads(arguments)
-            }
-        self.chat_item.set_data(self.assistant_role, text, function_call_data=function_data, no_callback=False)
-        
-    def update_function_call(self, function_name, arguments):
-        logger.debug('setting function call data')
-        function_data = {
-            'name': function_name,
-            'arguments': json.loads(arguments)
-        }
-        self.chat_item.set_function_call_data(function_data)
+    # def update_text(self, text, function_name, arguments):
+    #     function_data = None
+    #     if function_name:
+    #         logger.debug('arguments', arguments)
+    #         function_data = {
+    #             'name': function_name,
+    #             'arguments': json.loads(arguments)
+    #         }
+    #     self.chat_item.set_data(self.assistant_role, text, function_call_data=function_data, no_callback=False)
 
  
 @all_methods_logger
@@ -176,13 +169,30 @@ class ChatController:
         
     def on_generate_clicked(self, ind, chat_item):
         conversation = self.chat.get_conversation_history(ind)
+        def update_text(text, function_name, arguments):
+            function_data = None
+            if function_name:
+                logger.debug('arguments', arguments)
+                function_data = {
+                    'name': function_name,
+                    'arguments': json.loads(arguments)
+                }
+            chat_item.set_data('assistant', text, function_call_data=function_data, no_callback=False)
+            
         self.chat_item_updater = ChatItemUpdater(
             chat_item=chat_item,
             conversation=conversation,
             assistant_role='assistant',
             functions=self.chat.tools
         )
+        self.chat_item_updater.update_signal.connect(update_text, Qt.QueuedConnection)
+        self.chat_item_updater.finished_run_signal.connect(self.force_updater_quit)
         self.chat_item_updater.start()
+        
+    def force_updater_quit(self):
+        if self.chat_item_updater.isRunning():
+            self.chat_item_updater.terminate()
+            self.chat_item_updater.wait()
         
     def on_function_add_clicked(self):
         function = Tool.create_empty('new_function')
