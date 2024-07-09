@@ -10,7 +10,8 @@ dependencies = [
   "PySide6 ~= 6.5.1",
   "openai ~= 1.11.1",
   "tokenizers ~= 0.13.3",
-  "tiktoken ~= 0.7.0"
+  "tiktoken ~= 0.7.0",
+  "loguru ~= 0.7.2"
 ]
 requires-python = ">=3.10"
 authors = [
