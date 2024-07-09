@@ -179,6 +179,11 @@ If you experience any problem, please make a corresponding issue.
 
 ## TODO
 
+- [ ] QoL
+    - [ ] Focus main window when closing a chat window.
+    - [ ] Fix coloring, it's too contrast and sometimes makes things difficult to see.
+    - [ ] Ctrl + S should work in the chat window as well.
+    - [ ] Reduce the size of the right side in chat.
 - [ ] Safeguards not to lose data.
     - [ ] Automatic saving (optional).
     - [x] Asking to save if haven't already when closing app.
