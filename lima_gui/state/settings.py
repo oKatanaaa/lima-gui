@@ -1,4 +1,7 @@
+from loguru import logger
 from tokenizers import Tokenizer
+from tiktoken.model import MODEL_TO_ENCODING
+import tiktoken
 
 
 class Settings:
@@ -22,7 +25,7 @@ class Settings:
         'meta problems',
         'agent'
     ]
-    DEFAULT_TOKENIZER = 'mistralai/Mistral-7B-v0.1'
+    DEFAULT_TOKENIZER = 'gpt-4'
     
     @staticmethod
     def get_instance():
@@ -38,7 +41,13 @@ class Settings:
         
     def set_tokenizer(self, tokenizer_name: str):
         self.tokenizer_name = tokenizer_name
-        self.tokenizer = Tokenizer.from_pretrained(tokenizer_name)
+        if tokenizer_name in MODEL_TO_ENCODING:
+            logger.debug(f"Received an OpenAI tokenizer {tokenizer_name}")
+            logger.debug(f"The underlying encoding is {MODEL_TO_ENCODING[tokenizer_name]}")
+            self.tokenizer = tiktoken.encoding_for_model(tokenizer_name)
+        else:
+            logger.debug("Received huggingface tokenizer", tokenizer_name)
+            self.tokenizer = Tokenizer.from_pretrained(tokenizer_name)
         
     def get_token_count(self, str):
         return len(self.tokenizer.encode(str))

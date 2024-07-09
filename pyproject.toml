@@ -9,7 +9,8 @@ dependencies = [
   "pandas ~= 1.5.3",
   "PySide6 ~= 6.5.1",
   "openai ~= 1.11.1",
-  "tokenizers ~= 0.13.3"
+  "tokenizers ~= 0.13.3",
+  "tiktoken ~= 0.7.0"
 ]
 requires-python = ">=3.10"
 authors = [
@@ -44,4 +45,4 @@ Repository = "https://github.com/oKatanaaa/lima-gui"
 "Bug Tracker" = "https://github.com/oKatanaaa/lima-gui/issues"
 
 [project.scripts]
-lima-gui-app = "lima_gui.app:main"
+limagui = "lima_gui.app:main"
