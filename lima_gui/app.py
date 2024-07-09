@@ -3,7 +3,7 @@ from lima_gui.view.main_window import MainWindow
 import threading
 
 
-if __name__ == '__main__':
+def main():
     # Otherwise the app crashes with a mysterios segmentation fault
     threading.stack_size(262144)  # 256KiB stack
     import sys

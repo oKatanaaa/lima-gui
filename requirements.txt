@@ -1,4 +1,0 @@
-pandas~=1.5.3
-PySide6~=6.5.1
-openai~=1.11.1
-tokenizers~=0.13.3

@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools >= 68.2.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lima_gui"
+dynamic = ["version"]
+dependencies = [
+  "pandas ~= 1.5.3",
+  "PySide6 ~= 6.5.1",
+  "openai ~= 1.11.1",
+  "tokenizers ~= 0.13.3"
+]
+requires-python = ">=3.10"
+authors = [
+  {name = "Igor Kilbas", email = "whitemarsstudios@gmail.com"}
+]
+maintainers = [
+  {name = "Igor Kilbas", email = "whitemarsstudios@gmail.com"}
+]
+description = "A simple GUI utility for gathering LIMA-like chat data."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = {file = "LICENSE"}
+keywords = [
+  "large language model",
+  "instruction tuning", 
+  "chat dataset", 
+  "data gathering", 
+  "instruction following"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: LLM Development",
+  "Programming Language :: Python"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "lima_gui.__version__"}
+
+[project.urls]
+Homepage = "https://github.com/oKatanaaa/lima-gui"
+Repository = "https://github.com/oKatanaaa/lima-gui"
+"Bug Tracker" = "https://github.com/oKatanaaa/lima-gui/issues"
+
+[project.scripts]
+lima-gui-app = "lima_gui.app:main"
