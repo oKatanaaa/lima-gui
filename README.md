@@ -26,6 +26,14 @@ Example chat:
 ]
 ```
 
+## Usage
+
+1. Download latest release (main branch is likely to be less stable).
+2. Install **lima-gui** by running `pip install .` in the repo folder.
+3. Run `limagui`.
+
+If you experience any problems, please make a corresponding issue.
+
 ## Motivation
 
 I strongly believe in personalized AI tailored to the user's personal preferences and use cases. Having your own AI is way better instead of relying on others' work as you have full control and customization freedom. 
@@ -168,14 +176,6 @@ See `examples` folder for a sample of chats with function calling.
 > This section used to be longer!
 
 The project is still in its early stages, so expect a few bumps along the road. Despite how yong the project is, I've found current feature set to be super handy (at least for my needs).
-
-## Usage
-
-1. Download the latest release (main branch is likely to less stable).
-2. Install the lima-gui by running `pip install -e .` in the repo folder.
-3. Run `python -m lima_gui.app`
-
-If you experience any problem, please make a corresponding issue.
 
 ## TODO
 
