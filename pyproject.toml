@@ -6,14 +6,19 @@ build-backend = "setuptools.build_meta"
 name = "lima_gui"
 dynamic = ["version"]
 dependencies = [
-  "pandas ~= 2.2.3",
-  "PySide6 ~= 6.8.0.2",
+  "sqlalchemy ~= 2.0.36",
+  "fastapi ~= 0.115.4",
+  "uvicorn ~= 0.32.0",
+  "jsonschema ~= 4.23.0",
+  "jinja2 ~= 3.1.4",
+  "python-multipart ~= 0.0.17",
+  "pytest ~= 8.3.3",
   "openai ~= 1.54.1",
   "tokenizers ~= 0.20.3",
   "tiktoken ~= 0.8.0",
   "loguru ~= 0.7.2"
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
   {name = "Igor Kilbas", email = "whitemarsstudios@gmail.com"}
 ]
@@ -46,4 +51,4 @@ Repository = "https://github.com/oKatanaaa/lima-gui"
 "Bug Tracker" = "https://github.com/oKatanaaa/lima-gui/issues"
 
 [project.scripts]
-limagui = "lima_gui.app:main"
+limagui = "lima_gui.run:main"

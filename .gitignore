@@ -1,8 +1,13 @@
+*.db
+.webui_secret_key
+.env.test
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 .vscode/
+
 
 # C extensions
 *.so
