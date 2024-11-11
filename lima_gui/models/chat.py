@@ -1,6 +1,6 @@
 from sqlalchemy import (
     create_engine, Column, Integer, String, 
-    ForeignKey, Enum, Table, Text, UniqueConstraint
+    ForeignKey, Enum, Table, Text, UniqueConstraint, PrimaryKeyConstraint
 )
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -69,7 +69,6 @@ class ToolCall(ChatBase):
 class Tool(ChatBase):
     __tablename__ = 'tools'
 
-    id = Column(Integer, primary_key=True)
     chat_id = Column(Integer, ForeignKey('chats.id'))
     name = Column(String, nullable=False)
     description = Column(String)
@@ -78,7 +77,7 @@ class Tool(ChatBase):
 
     # Ensure tool names are unique within each chat
     __table_args__ = (
-        UniqueConstraint("chat_id", "name", name="uq_tool_name_per_chat"),
+        PrimaryKeyConstraint('chat_id', 'name', name='pk_tool_chat_name'),
     )
 
     # Validate that parameters, if present, is a valid JSON schema

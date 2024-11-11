@@ -4,6 +4,11 @@ from pydantic import BaseModel
 from typing import Any, List, Optional
 
 
+class ToolSchema(BaseModel):
+    name: str
+    description: str
+    parameters: str
+
 class ToolCallSchema(BaseModel):
     id: str
     tool_name: str
