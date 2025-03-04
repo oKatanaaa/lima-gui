@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Message from './Message'; // Import our new Message component
 
 // SVG Icons Components
 const PlusIcon = () => (
@@ -155,7 +156,7 @@ export const MessageArea = ({ messages, onAddMessage, onUpdateMessage, onDeleteM
         <Message 
           key={message.id} 
           message={message} 
-          onUpdate={(content) => onUpdateMessage(message.id, content)}
+          onUpdate={(updates) => onUpdateMessage(message.id, updates)}
           onDelete={() => onDeleteMessage(message.id)}
           onGenerate={() => onGenerateMessage(message.id)}
         />
@@ -177,74 +178,6 @@ export const MessageArea = ({ messages, onAddMessage, onUpdateMessage, onDeleteM
         >
           Add Message
         </button>
-      </div>
-    </div>
-  );
-};
-
-const Message = ({ message, onUpdate, onDelete, onGenerate }) => {
-  // Get message style class based on role
-  const getMessageClass = (role) => {
-    switch (role) {
-      case 'system': return 'system-message';
-      case 'user': return 'user-message';
-      case 'assistant': return 'assistant-message';
-      case 'function': return 'function-message';
-      default: return 'user-message';
-    }
-  };
-  
-  // Get role style class 
-  const getRoleClass = (role) => {
-    switch (role) {
-      case 'system': return 'role-system';
-      case 'user': return 'role-user';
-      case 'assistant': return 'role-assistant';
-      case 'function': return 'role-function';
-      default: return 'role-user';
-    }
-  };
-  
-  return (
-    <div className="message">
-      <div className="message-header">
-        <select 
-          className={`role-select ${getRoleClass(message.role)}`} 
-          value={message.role}
-          onChange={(e) => onUpdate({ ...message, role: e.target.value })}
-        >
-          <option value="system">system</option>
-          <option value="user">user</option>
-          <option value="assistant">assistant</option>
-          <option value="function">function</option>
-        </select>
-        <div className="message-actions">
-          {message.role === 'assistant' && (
-            <button 
-              className="message-action" 
-              title="Generate with AI"
-              onClick={onGenerate}
-            >
-              <PlayIcon />
-            </button>
-          )}
-          <button className="message-action" title="Edit">
-            <EditIcon />
-          </button>
-          <button className="message-action delete-action" title="Delete" onClick={onDelete}>
-            <DeleteIcon />
-          </button>
-        </div>
-      </div>
-      <div className={`message-content ${getMessageClass(message.role)}`}>
-        <div 
-          className="content-editable" 
-          contentEditable={true}
-          onBlur={(e) => onUpdate({ ...message, content: e.target.innerText })}
-          suppressContentEditableWarning={true}
-        >
-          {message.content}
-        </div>
       </div>
     </div>
   );

@@ -502,3 +502,55 @@
     stroke-width: 2;
     fill: none;
   }
+
+  .save-status {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+    font-size: 12px;
+  }
+  
+  .saving-indicator {
+    display: flex;
+    align-items: center;
+    color: #5e5cff;
+    animation: pulse 1.5s infinite;
+  }
+  
+  .saving-indicator svg {
+    margin-right: 4px;
+  }
+  
+  .saved-indicator {
+    color: #10b981;
+    opacity: 0.8;
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.5;
+    }
+  }
+
+  .status-indicator {
+    font-size: 12px;
+    margin-right: 8px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  
+  .status-indicator.saving {
+    color: #5e5cff;
+    background-color: rgba(94, 92, 255, 0.1);
+  }
+  
+  .status-indicator.saved {
+    color: #10b981;
+    background-color: rgba(16, 185, 129, 0.1);
+  }

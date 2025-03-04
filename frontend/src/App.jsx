@@ -185,14 +185,18 @@ function MainApp() {
 
   // Update a message
   const handleUpdateMessage = async (messageId, updates) => {
-    if (!selectedChat) return;
+    if (!selectedChat) return Promise.reject(new Error("No chat selected"));
     
     try {
-      await fetch(`/chat/${selectedChat.id}/message/${messageId}`, {
+      const response = await fetch(`/chat/${selectedChat.id}/message/${messageId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
       });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
       
       // Update the message in the local state
       setSelectedChat({
@@ -201,9 +205,12 @@ function MainApp() {
           msg.id === messageId ? { ...msg, ...updates } : msg
         )
       });
+      
+      return Promise.resolve(); // Return a resolved promise on success
     } catch (err) {
       console.error('Failed to update message:', err);
       setError(err.message);
+      return Promise.reject(err); // Return a rejected promise on failure
     }
   };
 
