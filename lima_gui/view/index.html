@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page - Chat App</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chat-list { max-width: 600px; margin: 20px auto; }
+        .chat-item { cursor: pointer; padding: 10px; border-bottom: 1px solid #ddd; }
+        .chat-item:hover { background-color: #f0f0f0; }
+        #controls { margin-top: 20px; text-align: center; }
+        #upload-dropzone { padding: 20px; border: 2px dashed #aaa; text-align: center; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align: center;">Chat Application</h2>
+
+    <div id="controls">
+        <button onclick="fetchChats()">Refresh Chat List</button>
+        <button onclick="saveChats()">Save Chats</button>
+        <button onclick="addChat()">Add New Chat</button>
+    </div>
+
+    <!-- Chat List -->
+    <div id="chat-list"></div>
+
+    <!-- Drag and Drop Upload Zone -->
+    <div id="upload-dropzone" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+        Drag and drop a .jsonl file here to upload chats
+    </div>
+
+    <!-- JavaScript for Interacting with FastAPI Endpoints -->
+    <script>
+        // Load chats when the page loads
+        document.addEventListener("DOMContentLoaded", fetchChats);
+
+        async function fetchChats() {
+            try {
+                const response = await fetch("/chats/");
+                const chats = await response.json();
+                const chatList = document.getElementById("chat-list");
+                chatList.innerHTML = "";
+
+                chats.forEach(chat => {
+                    const chatItem = document.createElement("div");
+                    chatItem.classList.add("chat-item");
+                    chatItem.innerHTML = `<strong>${chat.name}</strong> - ${chat.message_count} messages`;
+                    chatItem.onclick = () => viewChat(chat.id);
+                    chatItem.ondblclick = () => redirectToChatEditor(chat.id);
+                    
+                    const copyButton = document.createElement("button");
+                    copyButton.innerText = "Copy";
+                    copyButton.onclick = (e) => { e.stopPropagation(); copyChat(chat.id); };
+                    chatItem.appendChild(copyButton);
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.innerText = "Delete";
+                    deleteButton.onclick = (e) => { e.stopPropagation(); deleteChat(chat.id); };
+                    chatItem.appendChild(deleteButton);
+
+                    chatList.appendChild(chatItem);
+                });
+            } catch (error) {
+                console.error("Error fetching chats:", error);
+            }
+        }
+
+        async function saveChats() {
+            try {
+                const response = await fetch("/chats/save");
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "chats.jsonl";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error("Error saving chats:", error);
+            }
+        }
+
+        async function addChat() {
+            try {
+                const response = await fetch("/chats/new", { method: "POST" });
+                if (response.ok) {
+                    fetchChats();  // Refresh the list
+                }
+            } catch (error) {
+                console.error("Error adding chat:", error);
+            }
+        }
+
+        async function copyChat(chatId) {
+            try {
+                const response = await fetch(`/chats/${chatId}/copy`, { method: "POST" });
+                if (response.ok) {
+                    fetchChats();  // Refresh the list
+                }
+            } catch (error) {
+                console.error("Error copying chat:", error);
+            }
+        }
+
+        async function deleteChat(chatId) {
+            if (!confirm("Are you sure you want to delete this chat?")) return;
+            try {
+                const response = await fetch(`/chats/${chatId}`, { method: "DELETE" });
+                if (response.ok) {
+                    fetchChats();  // Refresh the list
+                }
+            } catch (error) {
+                console.error("Error deleting chat:", error);
+            }
+        }
+
+        function redirectToChatEditor(chatId) {
+            window.location.href = `/chats/${chatId}/edit`;
+        }
+
+        async function handleDrop(event) {
+            event.preventDefault();
+            const file = event.dataTransfer.files[0];
+            if (file && file.name.endsWith(".jsonl")) {
+                const formData = new FormData();
+                formData.append("file", file);
+                try {
+                    const response = await fetch("/chats/upload", {
+                        method: "POST",
+                        body: formData
+                    });
+                    if (response.ok) {
+                        fetchChats();  // Refresh the list after upload
+                    } else {
+                        alert("Failed to upload the file.");
+                    }
+                } catch (error) {
+                    console.error("Error uploading file:", error);
+                }
+            } else {
+                alert("Please upload a .jsonl file.");
+            }
+        }
+    </script>
+
+</body>
+</html>
