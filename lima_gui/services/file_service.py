@@ -17,7 +17,7 @@ class FileService:
             for line in f:
                 chat_data = json.loads(line)
                 # Convert from file format to database models
-                chat = Chat(name=chat_data.get("name", "Imported Chat"))
+                chat = Chat(name=chat_data.get("name", "Imported Chat"), language=chat_data.get("lang", "en"))
                 
                 # Add tags
                 for tag_name in chat_data.get("tags", []):

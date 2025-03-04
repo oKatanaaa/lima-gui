@@ -66,7 +66,6 @@ async def add_tool(id: int, request: Request, db: Session = Depends(get_chat_db)
     db.refresh(tool)
 
     tool_schema = ToolSchema(
-        id=tool.id,
         name=tool.name,
         description=tool.description,
         parameters=tool.parameters

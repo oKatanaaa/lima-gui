@@ -38,6 +38,7 @@ class Chat(ChatBase):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    language = Column(String, nullable=False)
     messages = relationship("Message", back_populates="chat", cascade="all, delete-orphan")
     tools = relationship("Tool", back_populates="chat", cascade="all, delete-orphan")
     tags = relationship("Tag", secondary=chat_tag_association, backref="chats")

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useNavigate } from 'react-router-dom';
-import Layout, { ChatList, ChatHeader, MessageArea, RightSidebar } from './components/Layout';
+import { Header, ChatList, ChatHeader, MessageArea, RightSidebar } from './components'; // Import all components from index
 import './main.css';
 
 function App() {
@@ -373,48 +373,52 @@ function MainApp() {
   };
 
   return (
-    <Layout>
-      <ChatList 
-        chats={chats} 
-        selectedChatId={selectedChat?.id} 
-        onSelectChat={handleSelectChat}
-        onCreateChat={handleCreateChat}
-      />
+    <div className="app">
+      <Header /> {/* Use the new Header component */}
       
-      {selectedChat ? (
-        <>
-          <div className="main-content">
-            <ChatHeader 
-              chat={selectedChat}
-              onChangeName={handleChangeName}
-              onChangeLanguage={handleChangeLanguage}
-            />
+      <div className="container">
+        <ChatList 
+          chats={chats} 
+          selectedChatId={selectedChat?.id} 
+          onSelectChat={handleSelectChat}
+          onCreateChat={handleCreateChat}
+        />
+        
+        {selectedChat ? (
+          <>
+            <div className="main-content">
+              <ChatHeader 
+                chat={selectedChat}
+                onChangeName={handleChangeName}
+                onChangeLanguage={handleChangeLanguage}
+              />
+              
+              <MessageArea 
+                messages={selectedChat.messages || []}
+                onAddMessage={handleAddMessage}
+                onUpdateMessage={handleUpdateMessage}
+                onDeleteMessage={handleDeleteMessage}
+                onGenerateMessage={handleGenerateMessage}
+              />
+            </div>
             
-            <MessageArea 
-              messages={selectedChat.messages || []}
-              onAddMessage={handleAddMessage}
-              onUpdateMessage={handleUpdateMessage}
-              onDeleteMessage={handleDeleteMessage}
-              onGenerateMessage={handleGenerateMessage}
+            <RightSidebar 
+              chat={selectedChat}
+              onAddTag={handleAddTag}
+              onRemoveTag={handleRemoveTag}
+              onAddTool={handleAddTool}
+              onDeleteTool={handleDeleteTool}
+              onGenerate={() => alert('Please select a message to generate')}
             />
+          </>
+        ) : (
+          <div className="main-content empty-state">
+            <h2>Select a chat or create a new one</h2>
+            <p>Choose an existing chat from the list or click the "New Chat" button to get started</p>
           </div>
-          
-          <RightSidebar 
-            chat={selectedChat}
-            onAddTag={handleAddTag}
-            onRemoveTag={handleRemoveTag}
-            onAddTool={handleAddTool}
-            onDeleteTool={handleDeleteTool}
-            onGenerate={() => alert('Please select a message to generate')}
-          />
-        </>
-      ) : (
-        <div className="main-content empty-state">
-          <h2>Select a chat or create a new one</h2>
-          <p>Choose an existing chat from the list or click the "New Chat" button to get started</p>
-        </div>
-      )}
-    </Layout>
+        )}
+      </div>
+    </div>
   );
 }
 
