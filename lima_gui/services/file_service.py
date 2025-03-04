@@ -78,7 +78,7 @@ class FileService:
                 # Add messages
                 for message in sorted(chat.messages, key=lambda m: m.position):
                     msg_data = {
-                        "role": message.role,
+                        "role": message.role.value,
                         "content": message.content
                     }
                     

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { debounce } from '../utils/debounce';
 import { showStatus } from '../utils/statusIndicator';
 
@@ -27,6 +27,10 @@ const PlayIcon = () => (
 const Message = ({ message, onUpdate, onDelete, onGenerate }) => {
   // Create a ref for the contentEditable div
   const contentEditableRef = useRef(null);
+  // Store the previous content to compare changes
+  const [previousContent, setPreviousContent] = useState(message.content);
+  // Store cursor position data
+  const cursorPositionRef = useRef({ start: 0, end: 0 });
   
   // Create a debounced update function
   const debouncedUpdate = useRef(
@@ -69,11 +73,99 @@ const Message = ({ message, onUpdate, onDelete, onGenerate }) => {
     }
   };
 
+  // Save cursor position
+  const saveCursorPosition = () => {
+    if (document.activeElement !== contentEditableRef.current) return;
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(contentEditableRef.current);
+      preCaretRange.setEnd(range.startContainer, range.startOffset);
+      
+      cursorPositionRef.current = {
+        start: preCaretRange.toString().length,
+        end: preCaretRange.toString().length + range.toString().length
+      };
+    }
+  };
+
+  // Restore cursor position
+  const restoreCursorPosition = () => {
+    if (!contentEditableRef.current) return;
+    
+    // Only restore if we have a position to restore to and content has changed
+    if (contentEditableRef.current.textContent !== previousContent) {
+      setPreviousContent(contentEditableRef.current.textContent);
+      return;
+    }
+    
+    const selection = window.getSelection();
+    const range = document.createRange();
+    
+    let charIndex = 0;
+    let foundStart = false;
+    let foundEnd = false;
+    
+    iterateTextNodes(contentEditableRef.current, (node) => {
+      const nextCharIndex = charIndex + node.length;
+      
+      if (!foundStart && cursorPositionRef.current.start >= charIndex && cursorPositionRef.current.start <= nextCharIndex) {
+        range.setStart(node, cursorPositionRef.current.start - charIndex);
+        foundStart = true;
+      }
+      
+      if (!foundEnd && cursorPositionRef.current.end >= charIndex && cursorPositionRef.current.end <= nextCharIndex) {
+        range.setEnd(node, cursorPositionRef.current.end - charIndex);
+        foundEnd = true;
+      }
+      
+      if (foundStart && foundEnd) {
+        return true; // Stop iteration
+      }
+      
+      charIndex = nextCharIndex;
+      return false; // Continue iteration
+    });
+    
+    if (foundStart && foundEnd) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  };
+
+  // Helper function to iterate through text nodes
+  const iterateTextNodes = (element, callback) => {
+    if (element.nodeType === Node.TEXT_NODE) {
+      return callback(element);
+    }
+    
+    for (let i = 0; i < element.childNodes.length; i++) {
+      const result = iterateTextNodes(element.childNodes[i], callback);
+      if (result) return true;
+    }
+    
+    return false;
+  };
+
   // Handle content changes
   const handleContentChange = (e) => {
+    saveCursorPosition();
     const content = e.target.innerText;
     debouncedUpdate(content);
   };
+  
+  // Effect to restore cursor position after re-renders when content doesn't change
+  useEffect(() => {
+    // When the message content changes from outside, update our previousContent
+    if (message.content !== previousContent) {
+      setPreviousContent(message.content);
+    } else {
+      // When content hasn't changed externally, try to restore cursor
+      restoreCursorPosition();
+    }
+  }, [message.content, previousContent]);
   
   return (
     <div className="message">
@@ -125,6 +217,9 @@ const Message = ({ message, onUpdate, onDelete, onGenerate }) => {
           className="content-editable" 
           contentEditable={true}
           onInput={handleContentChange}
+          onBlur={saveCursorPosition}
+          onKeyUp={saveCursorPosition}
+          onMouseUp={saveCursorPosition}
           suppressContentEditableWarning={true}
           dangerouslySetInnerHTML={{ __html: message.content }}
         />
