@@ -1,15 +1,42 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from dotenv import load_dotenv
+import os
+import appdirs
+from pathlib import Path
+from lima_gui.constants import APP_NAME
 
-load_dotenv()
+def get_app_data_dir():
+    """Get the platform-specific application data directory."""
+    app_dir = Path(appdirs.user_data_dir(APP_NAME))
+    app_dir.mkdir(parents=True, exist_ok=True)
+    return app_dir
+
 
 def get_chat_db_url():
-    return os.getenv("CHAT_DB_URL", "sqlite:///./chat.db")
+    """Get database URL for chat database with proper user directory."""
+    # Check if environment variable is set
+    if os.getenv("CHAT_DB_URL"):
+        return os.getenv("CHAT_DB_URL")
+    
+    # Use platform-specific user data directory
+    db_path = get_app_data_dir() / "chat.db"
+    return f"sqlite:///{db_path}"
 
-def get_state_db_url():
-    return os.getenv("STATE_DB_URL", "sqlite:///./state.db")
+
+def init_databases():
+    """Initialize all databases if they don't exist."""
+    # Get engines
+    chat_engine = get_chat_engine()
+    
+    # Create all tables if they don't exist
+    from .chat import ChatBase
+    
+    ChatBase.metadata.create_all(chat_engine)
+    
+    # Log initialization
+    from loguru import logger
+    logger.info(f"Initialized databases at {get_app_data_dir()}")
 
 
 _chat_engine = None
@@ -38,29 +65,3 @@ def get_chat_db():
     finally:
         db.remove()
 
-# --- For App State ---
-
-_state_engine = None
-_state_session = None
-
-def get_state_engine():
-    global _state_engine
-    if _state_engine is None:
-        _state_engine = create_engine(get_state_db_url(), echo=True)
-    return _state_engine
-
-
-def get_state_session():
-    global _state_session
-    if _state_session is None:
-        _state_session = scoped_session(sessionmaker(bind=get_state_engine()))
-    return _state_session
-
-
-# Dependency to use a session in endpoints
-def get_state_db():
-    db = get_state_session()
-    try:
-        yield db
-    finally:
-        db.remove()

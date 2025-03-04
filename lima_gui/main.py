@@ -1,20 +1,29 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from lima_gui.routers import main_router, chat_router
-from lima_gui.models import init_state, init_chat
+from fastapi import FastAPI
+from lima_gui.routers import main_router, chat_router, settings_router
+from lima_gui.models.db import init_databases
+from lima_gui.config import ConfigManager
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_chat()
-    init_state()
-    print('init')
+    # Initialize config manager (makes it available for the whole app)
+    app.state.config_manager = ConfigManager()
+
+    # Initialize databases
+    init_databases()
+    
+    # Log application startup
+    from loguru import logger
+    logger.info("LIMA-GUI application started")
+    
     yield
-    return
+    
+    # Log application shutdown
+    logger.info("LIMA-GUI application stopped")
 
 
 app = FastAPI(lifespan=lifespan)
-
-
 app.include_router(main_router)
 app.include_router(chat_router)
+app.include_router(settings_router)
