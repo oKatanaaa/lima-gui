@@ -75,7 +75,7 @@ def delete_chat(chat_id: int, db: Session = Depends(get_chat_db)):
 
 @main_router.post("/chats")
 def add_chat(db: Session = Depends(get_chat_db)):
-    new_chat = Chat(name="New Chat")
+    new_chat = Chat(name="New Chat", language="en")
     db.add(new_chat)
     db.commit()
     db.refresh(new_chat)

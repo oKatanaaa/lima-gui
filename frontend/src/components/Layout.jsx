@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Message from './Message'; // Import our new Message component
+import Message from './Message'; // Import our Message component
 
 // SVG Icons Components
 const PlusIcon = () => (
@@ -64,53 +64,6 @@ const Header = () => {
   );
 };
 
-export const ChatList = ({ chats, selectedChatId, onSelectChat, onCreateChat }) => {
-  return (
-    <div className="left-sidebar">
-      <div className="sidebar-header">
-        <h2 className="sidebar-title">Chats</h2>
-        <button className="new-chat-button" onClick={onCreateChat}>
-          + New Chat
-        </button>
-      </div>
-      
-      <div className="search-container">
-        <input 
-          type="text" 
-          className="search-input" 
-          placeholder="Search chats..." 
-        />
-      </div>
-      
-      <div className="chat-list">
-        {chats.map(chat => (
-          <div 
-            key={chat.id} 
-            className={`chat-item ${chat.id === selectedChatId ? 'active' : ''}`} 
-            onClick={() => onSelectChat(chat.id)}
-          >
-            <div className="chat-header">
-              <span className="chat-title">{chat.name || 'Untitled Chat'}</span>
-              <span className="chat-lang">{chat.language || 'en'}</span>
-            </div>
-            <div className="chat-stats">
-              <span>{chat.message_count || 0} messages</span>
-              <span>{chat.tokens || 0} tokens</span>
-            </div>
-            {chat.tags && chat.tags.length > 0 && (
-              <div className="chat-tags">
-                {chat.tags.map((tag, idx) => (
-                  <span key={idx} className="tag">{tag}</span>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 export const ChatHeader = ({ chat, onChangeName, onChangeLanguage }) => {
   return (
     <div className="chat-header-bar">
@@ -141,9 +94,7 @@ export const ChatHeader = ({ chat, onChangeName, onChangeLanguage }) => {
         <button className="action-button" title="Copy Chat">
           <CopyIcon />
         </button>
-        <button className="action-button" title="Delete Chat">
-          <DeleteIcon />
-        </button>
+        {/* Delete button removed */}
       </div>
     </div>
   );

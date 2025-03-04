@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useNavigate } from 'react-router-dom';
-import { Header, ChatList, ChatHeader, MessageArea, RightSidebar } from './components'; // Import all components from index
+import { Header, ChatList, ChatHeader, MessageArea, RightSidebar } from './components';
 import './main.css';
 
 function App() {
@@ -91,6 +91,40 @@ function MainApp() {
       navigate(`/chat/${newChat.id}`);
     } catch (err) {
       console.error('Failed to create chat:', err);
+      setError(err.message);
+    }
+  };
+
+  // Make sure this function is defined in the MainApp component in App.jsx
+  const handleDeleteChat = async (chatId) => {
+    try {
+      const response = await fetch(`/chats/${chatId}`, {
+        method: 'DELETE'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      // Remove the chat from the local state
+      setChats(chats.filter(chat => chat.id !== chatId));
+      
+      // If the deleted chat was selected, navigate to another chat or clear selection
+      if (selectedChat && selectedChat.id === chatId) {
+        if (chats.length > 1) {
+          // Find the next chat to select
+          const nextChat = chats.find(chat => chat.id !== chatId);
+          if (nextChat) {
+            navigate(`/chat/${nextChat.id}`);
+          }
+        } else {
+          // No more chats, clear selection
+          setSelectedChat(null);
+          navigate('/');
+        }
+      }
+    } catch (err) {
+      console.error('Failed to delete chat:', err);
       setError(err.message);
     }
   };
@@ -389,6 +423,7 @@ function MainApp() {
           selectedChatId={selectedChat?.id} 
           onSelectChat={handleSelectChat}
           onCreateChat={handleCreateChat}
+          onDeleteChat={handleDeleteChat}
         />
         
         {selectedChat ? (

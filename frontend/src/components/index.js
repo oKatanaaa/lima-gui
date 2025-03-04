@@ -2,4 +2,5 @@
 export { default as Header } from './Header';
 export { default as Settings } from './Settings'; 
 export { default as Message } from './Message';
-export { ChatList, ChatHeader, MessageArea, RightSidebar } from './Layout';
+export { default as ChatList } from './ChatList';
+export { ChatHeader, MessageArea, RightSidebar } from './Layout';

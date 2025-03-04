@@ -133,6 +133,9 @@
     padding: 15px;
     border-bottom: 1px solid #e0e0e0;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .chat-item:hover {
@@ -554,3 +557,42 @@
     color: #10b981;
     background-color: rgba(16, 185, 129, 0.1);
   }
+
+  /* Update chat-item to display flex for the delete button */
+.chat-item {
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Container for the chat content */
+.chat-item-content {
+  flex: 1;
+}
+
+/* Delete button styling */
+.delete-chat-button {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  color: #666;
+  opacity: 0.5;
+  transition: all 0.2s ease-in-out;
+}
+
+.delete-chat-button:hover {
+  color: #e11d48;
+  opacity: 1;
+}
+
+.chat-item.active .delete-chat-button {
+  opacity: 0.7;
+}
+
+.chat-item:hover .delete-chat-button {
+  opacity: 0.7;
+}
