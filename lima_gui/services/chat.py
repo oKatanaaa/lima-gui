@@ -32,7 +32,7 @@ class MessageSchema(BaseModel):
             id=msg.id,
             role=msg.role,
             content=msg.content,
-            tool_call=tools
+            tool_calls=tools
         )
 
 class ChatDetailsSchema(BaseModel):

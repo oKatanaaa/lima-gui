@@ -14,10 +14,10 @@ from jsonschema import validate
 ChatBase = declarative_base()
 
 class RoleEnum(enum.Enum):
-    System = "System"
-    User = "User"
-    Assistant = "Assistant"
-    Tool = "Tool"
+    system = "system"
+    user = "user"
+    assistant = "assistant"
+    tool = "tool"
 
 # Association table for Chat <-> Tag many-to-many relationship
 chat_tag_association = Table(
