@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, UploadFile, File, HTTPException, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from lima_gui.models import Chat, Message, Tool, ToolCall, get_chat_db
+from lima_gui.models import Chat, Message, Tool, ToolCall, Tag, get_chat_db
 import json
 from ..services.chat import get_chat as _get_chat
 from ..services.chat import add_message as _add_message
@@ -46,10 +46,57 @@ async def get_chat(id: int, db: Session = Depends(get_chat_db)):
 async def update_chat(id: int, request: Request, db: Session = Depends(get_chat_db)):
     data = await request.json()
     chat = db.query(Chat).get(id)
-    chat.name = data["name"]
-    chat.tags = data["tags"]
+
+    if not chat:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Chat not found")
+
+    name = data.get("name")
+    if name is not None:
+        chat.name = name
+
+    language = data.get("language")
+    if language is not None:
+        chat.language = language
+
+    if "tags" in data:
+        raw_tags = data.get("tags") or []
+
+        if not isinstance(raw_tags, list):
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Tags must be provided as a list")
+
+        existing_tags = {}
+        if raw_tags:
+            db_tags = db.query(Tag).filter(Tag.name.in_(raw_tags)).all()
+            existing_tags = {tag.name: tag for tag in db_tags}
+
+        new_tag_objects = []
+        seen = set()
+        for tag_name in raw_tags:
+            if not isinstance(tag_name, str):
+                raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Each tag must be a string")
+
+            tag_name = tag_name.strip()
+            if not tag_name or tag_name in seen:
+                continue
+            seen.add(tag_name)
+
+            tag_obj = existing_tags.get(tag_name)
+            if not tag_obj:
+                tag_obj = Tag(name=tag_name)
+                db.add(tag_obj)
+                existing_tags[tag_name] = tag_obj
+
+            new_tag_objects.append(tag_obj)
+
+        chat.tags = new_tag_objects
+
     db.commit()
-    return {"status": "success", "message": "Chat updated"}
+
+    updated_chat = _get_chat(id, db)
+    if updated_chat is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Chat not found")
+
+    return updated_chat
 
 
 @chat_router.post("/{id}/tools", response_model=ToolSchema)
