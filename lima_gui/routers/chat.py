@@ -163,9 +163,12 @@ async def update_message(id: int, message_id: int, request: Request, db: Session
 
 
 @chat_router.delete("/{chat_id}/message/{message_id}")
-async def delete_message(id: int, message_id: int, db: Session = Depends(get_chat_db)):
-    message = db.query(Message).filter(Message.id == message_id, Message.chat_id == id).first()
-    
+async def delete_message(chat_id: int, message_id: int, db: Session = Depends(get_chat_db)):
+    message = db.query(Message).filter(
+        Message.id == message_id,
+        Message.chat_id == chat_id,
+    ).first()
+
     if not message:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
 
@@ -173,8 +176,13 @@ async def delete_message(id: int, message_id: int, db: Session = Depends(get_cha
     db.commit()
 
     # Reorder remaining messages
-    remaining_messages = db.query(Message).filter(Message.chat_id == id).order_by(Message.position).all()
-    
+    remaining_messages = (
+        db.query(Message)
+        .filter(Message.chat_id == chat_id)
+        .order_by(Message.position)
+        .all()
+    )
+
     for index, msg in enumerate(remaining_messages):
         msg.position = index + 1  # Reassign position starting from 1
 
