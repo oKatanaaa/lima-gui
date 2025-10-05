@@ -1,13 +1,21 @@
 from sqlalchemy.orm import Session
-from lima_gui.models import Chat, Message
+from lima_gui.models import Chat, Message, Tool
 from pydantic import BaseModel
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 class ToolSchema(BaseModel):
     name: str
-    description: str
-    parameters: str
+    description: Optional[str] = None
+    parameters: Optional[Dict[str, Any]] = None
+
+    @staticmethod
+    def from_orm(tool: Tool):
+        return ToolSchema(
+            name=tool.name,
+            description=tool.description,
+            parameters=tool.parameters,
+        )
 
 class ToolCallSchema(BaseModel):
     id: str
@@ -30,8 +38,8 @@ class MessageSchema(BaseModel):
 
         return MessageSchema(
             id=msg.id,
-            role=msg.role,
-            content=msg.content,
+            role=msg.role.value if hasattr(msg.role, "value") else msg.role,
+            content=msg.content or "",
             tool_calls=tools
         )
 
@@ -39,12 +47,17 @@ class ChatDetailsSchema(BaseModel):
     id: int
     name: str
     n_msgs: int
-    n_tokens: int
+    language: str
+    tags: List[str]
+    tools: List[ToolSchema]
+    tokens: int
     messages: List[MessageSchema]
 
 
 def calculate_tokens(content: str) -> int:
     # Placeholder function to calculate tokens
+    if not content:
+        return 0
     return len(content.split())
 
 def get_chat(chat_id: int, db: Session) -> Optional[ChatDetailsSchema]:
@@ -56,12 +69,17 @@ def get_chat(chat_id: int, db: Session) -> Optional[ChatDetailsSchema]:
     messages = [MessageSchema.from_orm(msg) for msg in ordered_messages]
     n_tokens = sum(calculate_tokens(message.content) for message in chat.messages)
     n_msgs = len(chat.messages)
+    tags = [tag.name for tag in chat.tags]
+    tools = [ToolSchema.from_orm(tool) for tool in chat.tools]
 
     return ChatDetailsSchema(
         id=chat.id,
         name=chat.name,
         n_msgs=n_msgs,
-        n_tokens=n_tokens,
+        language=chat.language,
+        tags=tags,
+        tools=tools,
+        tokens=n_tokens,
         messages=messages
     )
 
