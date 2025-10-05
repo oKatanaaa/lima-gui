@@ -46,6 +46,12 @@ async def get_chat(id: int, db: Session = Depends(get_chat_db)):
 @chat_router.put("/{id}", response_model=ChatDetailsSchema)
 async def update_chat(id: int, request: Request, db: Session = Depends(get_chat_db)):
     data = await request.json()
+
+    if not isinstance(data, dict):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Payload must be a JSON object",
+        )
     chat = db.query(Chat).get(id)
 
     if not chat:
@@ -157,6 +163,13 @@ async def add_message(id: int, db: Session = Depends(get_chat_db)):
 @chat_router.put("/{id}/message/{message_id}", response_model=MessageSchema)
 async def update_message(id: int, message_id: int, request: Request, db: Session = Depends(get_chat_db)):
     data = await request.json()
+
+    if not isinstance(data, dict):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Payload must be a JSON object",
+        )
+
     message = db.query(Message).filter(Message.id == message_id, Message.chat_id == id).first()
 
     if not message:
@@ -165,7 +178,17 @@ async def update_message(id: int, message_id: int, request: Request, db: Session
     updated = False
 
     if "content" in data:
-        message.content = data["content"]
+        content_value = data["content"]
+
+        if content_value is None:
+            content_value = ""
+        elif not isinstance(content_value, str):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Content must be a string",
+            )
+
+        message.content = content_value
         updated = True
 
     if "role" in data:
@@ -173,8 +196,23 @@ async def update_message(id: int, message_id: int, request: Request, db: Session
         if role_value is None:
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Role cannot be null")
 
+        if isinstance(role_value, str):
+            role_value = role_value.strip()
+
+        if not isinstance(role_value, str):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Role must be a string",
+            )
+
+        if not role_value:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Role cannot be empty",
+            )
+
         try:
-            role_enum = RoleEnum(role_value)
+            role_enum = RoleEnum(role_value.lower())
         except ValueError:
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid role value")
 

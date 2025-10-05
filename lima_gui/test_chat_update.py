@@ -143,6 +143,25 @@ def test_update_message_role_only(client_and_session):
         assert message.role == RoleEnum.assistant
 
 
+def test_update_message_role_case_insensitive(client_and_session):
+    client, session_factory = client_and_session
+    chat_id = create_chat(session_factory)
+    message_id = create_message(session_factory, chat_id, role=RoleEnum.user)
+
+    response = client.put(
+        f"/chat/{chat_id}/message/{message_id}",
+        json={"role": "Assistant"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["role"] == "assistant"
+
+    with session_factory() as session:
+        message = session.get(Message, message_id)
+        assert message.role == RoleEnum.assistant
+
+
 def test_update_message_invalid_role(client_and_session):
     client, session_factory = client_and_session
     chat_id = create_chat(session_factory)
@@ -158,3 +177,42 @@ def test_update_message_invalid_role(client_and_session):
     with session_factory() as session:
         message = session.get(Message, message_id)
         assert message.role == RoleEnum.user
+
+
+def test_update_message_invalid_payload_shape(client_and_session):
+    client, session_factory = client_and_session
+    chat_id = create_chat(session_factory)
+    message_id = create_message(session_factory, chat_id)
+
+    response = client.put(
+        f"/chat/{chat_id}/message/{message_id}",
+        json=["not", "an", "object"],
+    )
+
+    assert response.status_code == 422
+
+
+def test_update_message_invalid_content_type(client_and_session):
+    client, session_factory = client_and_session
+    chat_id = create_chat(session_factory)
+    message_id = create_message(session_factory, chat_id)
+
+    response = client.put(
+        f"/chat/{chat_id}/message/{message_id}",
+        json={"content": 123},
+    )
+
+    assert response.status_code == 422
+
+
+def test_update_message_no_fields(client_and_session):
+    client, session_factory = client_and_session
+    chat_id = create_chat(session_factory)
+    message_id = create_message(session_factory, chat_id)
+
+    response = client.put(
+        f"/chat/{chat_id}/message/{message_id}",
+        json={},
+    )
+
+    assert response.status_code == 400
