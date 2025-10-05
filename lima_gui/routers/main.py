@@ -4,6 +4,7 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from lima_gui.models import Chat, Message, get_chat_db
+from lima_gui.services.chat import calculate_tokens, ToolSchema
 from lima_gui.services.file_service import FileService
 import json
 import tempfile
@@ -59,7 +60,18 @@ def save_chats(db: Session = Depends(get_chat_db)):
 @main_router.get("/chats")
 def fetch_chats(db: Session = Depends(get_chat_db)):
     chats = db.query(Chat).all()
-    chat_list = [{"id": chat.id, "name": chat.name, "message_count": len(chat.messages)} for chat in chats]
+    chat_list = []
+    for chat in chats:
+        tokens = sum(calculate_tokens(message.content) for message in chat.messages)
+        chat_list.append({
+            "id": chat.id,
+            "name": chat.name,
+            "message_count": len(chat.messages),
+            "language": chat.language,
+            "tags": [tag.name for tag in chat.tags],
+            "tools": [ToolSchema.from_orm(tool).model_dump() for tool in chat.tools],
+            "tokens": tokens,
+        })
     return chat_list
 
 
