@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from lima_gui.models import Chat, Message, Tool, ToolCall, Tag, get_chat_db
+from lima_gui.models.chat import RoleEnum
 import json
 from ..services.chat import get_chat as _get_chat
 from ..services.chat import add_message as _add_message
@@ -45,6 +46,12 @@ async def get_chat(id: int, db: Session = Depends(get_chat_db)):
 @chat_router.put("/{id}", response_model=ChatDetailsSchema)
 async def update_chat(id: int, request: Request, db: Session = Depends(get_chat_db)):
     data = await request.json()
+
+    if not isinstance(data, dict):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Payload must be a JSON object",
+        )
     chat = db.query(Chat).get(id)
 
     if not chat:
@@ -153,13 +160,75 @@ async def add_message(id: int, db: Session = Depends(get_chat_db)):
     return msg
 
 
-@chat_router.put("/{id}/message/{message_id}")
+@chat_router.put("/{id}/message/{message_id}", response_model=MessageSchema)
 async def update_message(id: int, message_id: int, request: Request, db: Session = Depends(get_chat_db)):
     data = await request.json()
+
+    if not isinstance(data, dict):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Payload must be a JSON object",
+        )
+
     message = db.query(Message).filter(Message.id == message_id, Message.chat_id == id).first()
-    message.content = data["content"]
+
+    if not message:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
+
+    updated = False
+
+    if "content" in data:
+        content_value = data["content"]
+
+        if content_value is None:
+            content_value = ""
+        elif not isinstance(content_value, str):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Content must be a string",
+            )
+
+        message.content = content_value
+        updated = True
+
+    if "role" in data:
+        role_value = data["role"]
+        if role_value is None:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Role cannot be null")
+
+        if isinstance(role_value, str):
+            role_value = role_value.strip()
+
+        if not isinstance(role_value, str):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Role must be a string",
+            )
+
+        if not role_value:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Role cannot be empty",
+            )
+
+        try:
+            role_enum = RoleEnum(role_value.lower())
+        except ValueError:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid role value")
+
+        message.role = role_enum
+        updated = True
+
+    if not updated:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No supported fields provided for update",
+        )
+
     db.commit()
-    return {"status": "success", "message": "Message updated"}
+    db.refresh(message)
+
+    return MessageSchema.from_orm(message)
 
 
 @chat_router.delete("/{chat_id}/message/{message_id}")

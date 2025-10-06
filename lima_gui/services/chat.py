@@ -18,7 +18,7 @@ class ToolSchema(BaseModel):
         )
 
 class ToolCallSchema(BaseModel):
-    id: str
+    id: int
     tool_name: str
 
 class MessageSchema(BaseModel):
